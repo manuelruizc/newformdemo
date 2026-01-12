@@ -1,0 +1,28 @@
+{
+  "name": "@newformdemo/trpc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "types": "index.ts",
+  "dependencies": {
+    "@newformdemo/trpc": "^1.0.0",
+    "@trpc/server": "^11.8.1",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "server": "^1.0.0",
+    "zod": "^4.3.5"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.ts",
+      "import": "./index.ts"
+    }
+  }
+}
