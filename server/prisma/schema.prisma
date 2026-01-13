@@ -16,5 +16,12 @@ datasource db {
 model Video {
   id Int @id @default(autoincrement())
   uri String @unique
-  name String?
+  originalName String
+  uniqueName String
+  title        String
+  description  String?
+  mimetype     String
+  size         Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
