@@ -12,3 +12,9 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Video {
+  id Int @id @default(autoincrement())
+  uri String @unique
+  name String?
+}
