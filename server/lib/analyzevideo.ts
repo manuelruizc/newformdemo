@@ -6,14 +6,9 @@ import { prisma } from "./prisma";
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
 });
-console.log("key", process.env.GEMINI_API_KEY!);
 
-export async function analyzeVideo(
-  videoId: number,
-  prompt: string = "Describe what happens in this video in detail"
-): Promise<string> {
+export async function analyzeVideo(videoId: number) {
   try {
-    console.log({ videoId });
     const video = await prisma.video.findUnique({
       where: {
         id: videoId,
@@ -30,7 +25,6 @@ export async function analyzeVideo(
       "../../uploads/videos",
       video.uniqueName
     );
-    console.log(videoPath);
 
     if (!fs.existsSync(videoPath)) {
       throw new Error("Video file not found");
@@ -51,9 +45,72 @@ export async function analyzeVideo(
 
     const mimetype = mimetypeMap[ext] || "video/mp4";
 
-    // Generate content with video
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash", // Latest model
+    // Enhanced prompt that produces streaming text AND structured JSON
+    const enhancedPrompt = `IMPORTANT — FOLLOW EXACTLY.
+
+You are streaming STATUS FEEDBACK ONLY.
+
+For each section:
+- Start with a markdown bold heading (**SECTION_NAME**)
+- Output 2–4 short STATUS lines with emojis
+- END the section with the token: <br>
+
+STATUS lines:
+- Must describe progress only (analyzing, evaluating, completed)
+- Must NOT describe content, scenes, opinions, or insights
+- Must NOT include numbers, timestamps, scores, or findings
+
+Sections (in this exact order):
+HOOK
+VIBES
+DEMOGRAPHICS
+KEY MOMENTS
+SUGGESTIONS
+
+Example output (FORMAT MUST MATCH):
+
+**HOOK**
+🔍 Analyzing hook…
+🧠 Evaluating attention capture…
+✅ Hook analyzed.
+<br>
+
+**VIBES**
+🔍 Analyzing vibes…
+🎭 Identifying emotional tone…
+✅ Vibes analyzed.
+
+
+JSON OUTPUT (FINAL — NO MARKDOWN):
+- After the status text, output JSON ONLY.
+- Start with { and end with }.
+- No text before or after.
+- Must be valid JSON.
+
+{
+  "hookStrength": {
+    "score": <number 0-10>,
+    "reason": "<concise reason>",
+    "description": "<detailed explanation>"
+  },
+  "vibes": [
+    { "vibe": "<adjective>", "rate": <number 0-10> }
+  ],
+  "demographics": {
+    "ageRange": "<age range>",
+    "gender": "<target gender>",
+    "interests": ["<interest1>", "<interest2>"]
+  },
+  "keyMoments": [
+    { "timestamp": <seconds>, "reason": "<why important>" }
+  ],
+  "suggestions": [
+    { "recommendation": "<action>", "reason": "<why>" }
+  ]
+}
+`;
+    return ai.models.generateContentStream({
+      model: "gemini-2.5-flash-lite",
       contents: [
         {
           role: "user",
@@ -65,90 +122,18 @@ export async function analyzeVideo(
               },
             },
             {
-              text: prompt,
+              text: enhancedPrompt,
             },
           ],
         },
       ],
       config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: "object",
-          properties: {
-            hookStrength: {
-              type: "object",
-              properties: {
-                score: { type: "number" },
-                reason: { type: "string" },
-                description: { type: "string" },
-              },
-              required: ["score", "reason", "description"],
-              description:
-                "Score from 0-10 rating first 3 seconds and also give a concise reason and a description(longer) of why the hook has that score",
-            },
-            vibes: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  rate: { type: "number" },
-                  vibe: { type: "string" },
-                },
-                required: ["rate", "vibe"],
-              },
-              description:
-                "3-5 adjectives describing the mood and define a rate 0-10 where 0 is bad and 10 is perfect",
-            },
-            demographics: {
-              type: "object",
-              properties: {
-                ageRange: { type: "string" },
-                gender: { type: "string" },
-                interests: {
-                  type: "array",
-                  items: { type: "string" },
-                },
-              },
-              required: ["ageRange", "gender", "interests"],
-            },
-            keyMoments: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  timestamp: { type: "number" },
-                  reason: { type: "string" },
-                },
-                required: ["timestamp", "reason"],
-              },
-              description: "3-5 key moments in the ad",
-            },
-            suggestions: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  recommendation: { type: "string" },
-                  reason: { type: "string" },
-                },
-                required: ["recommendation", "reason"],
-              },
-              description:
-                "3-5 actionable recommendations and the reason why is being recommended",
-            },
-          },
-          required: [
-            "hookStrength",
-            "vibes",
-            "demographics",
-            "keyMoments",
-            "suggestions",
-          ],
-        },
+        temperature: 0.7,
+        topP: 0.95,
+        topK: 40,
+        maxOutputTokens: 2048,
       },
     });
-
-    return response.text || "Was not possible to analyze the video";
   } catch (error) {
     console.error("Gemini API error:", error);
     throw new Error(
