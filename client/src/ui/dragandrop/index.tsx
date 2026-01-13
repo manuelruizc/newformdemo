@@ -1,3 +1,4 @@
+"use client";
 import React, {
   useState,
   DragEvent,
@@ -15,71 +16,17 @@ interface UploadedFile {
   preview?: string;
 }
 
-interface VideoFileUploadResponse {
-  success: boolean;
-  error: string | undefined;
-  data: {
-    id: number;
-    uniqueName: string;
-    originalName: string;
-    size: number;
-    mimetype: string;
-    path: string;
-  };
-}
-
 function FileDragAndDrop({
   accept = [],
+  onHandleFiles,
 }: {
   accept?: string[];
+  onHandleFiles?: (files: UploadedFile[]) => void;
 }): React.ReactElement {
-  const analyzeVideo = trpc.video.analyzeVideo.useMutation();
-
   const filesRef = useRef<UploadedFile[]>([]);
   const [numberOfFiles, setNumberOfFiles] = useState<number>(0);
-  const [processing, setProcessing] = useState<UploadedFile | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const saveVideo = async (uploadedFile: UploadedFile) => {
-    try {
-      const formData = new FormData();
-      formData.append("video", uploadedFile.file);
-      formData.append("id", uploadedFile.id);
 
-      const uploadRes = await fetch("http://localhost:4000/api/upload/video", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!uploadRes.ok) {
-        const error: VideoFileUploadResponse = await uploadRes.json();
-        throw new Error(error.error || "Upload failed");
-      }
-
-      const { data, success, error }: VideoFileUploadResponse =
-        await uploadRes.json();
-
-      if (!success) {
-        console.error("Error on video upload", error);
-        return;
-      }
-
-      const result = await analyzeVideo.mutateAsync({
-        id: data.id,
-        uniqueName: data.uniqueName,
-        originalName: data.originalName,
-        title: "Title",
-        description: "description",
-      });
-      // console.log({ ...result, analysis: JSON.parse(result.analysis) });
-    } catch (error) {
-      console.error("Upload error:", error);
-      alert(
-        "Upload failed: " +
-          (error instanceof Error ? error.message : "Unknown error")
-      );
-    } finally {
-    }
-  };
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(true);
@@ -124,9 +71,8 @@ function FileDragAndDrop({
       }
 
       newFiles.push(uploadedFile);
-
-      if (processing === null) {
-        setProcessing(newFiles[0]);
+      if (onHandleFiles) {
+        onHandleFiles(newFiles);
       }
     }
 
@@ -161,35 +107,8 @@ function FileDragAndDrop({
     return str;
   }, [accept]);
 
-  const uploadVideo = async () => {
-    try {
-      const uploadedFile = filesRef.current.shift();
-      const res = await saveVideo(uploadedFile!);
-      if (filesRef.current.length === 0) {
-        setProcessing(null);
-        setNumberOfFiles(0);
-        return;
-      }
-      setProcessing(filesRef.current[0]);
-      setNumberOfFiles(filesRef.current.length);
-    } catch (e) {
-      setProcessing(null);
-      setNumberOfFiles(0);
-      filesRef.current = [];
-      console.error(e);
-      return e;
-    }
-  };
-
-  useEffect(() => {
-    if (processing === null) {
-      return;
-    }
-    uploadVideo();
-  }, [processing]);
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+    <div className="p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-center mb-2 text-gray-800">
           File Upload

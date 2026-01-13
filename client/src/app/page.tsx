@@ -1,6 +1,6 @@
 "use client";
-import FileDragAndDrop from "@/components/dragandrop";
+import FileDragAndDrop from "@/ui/dragandrop";
 
 export default function Home() {
-  return <FileDragAndDrop accept={["video/mp4", "video/webm"]} />;
+  return <div className="w-full h-screen bg-purple-900" />;
 }
