@@ -5,11 +5,45 @@
   --foreground: #171717;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Layout & Backgrounds */
+  --color-background: #f5f7fa; /* Main light gray backdrop */
+  --color-background-soft: #ffffff; /* Pure white cards and sidebar */
+  --color-background-mute: #edf1f7; /* Subtle hover states/dividers */
+
+  /* Text & Typography */
+  --color-text: #1a1d23; /* Deep slate/black for headings */
+  --color-text-secondary: #4a5568; /* Medium gray for descriptions */
+  --color-text-muted: #9ca3af; /* Light gray for placeholders/meta */
+
+  /* Primary Action (The Felix Blue) */
+  --color-primary: #4f46e5; /* The vibrant blue used in "+ Create Content" */
+  --color-primary-hover: #4338ca;
+  --color-primary-glow: #eef2ff; /* Used for light blue backgrounds/selections */
+  --color-primary-dark: #3730a3;
+
+  /* Accent / Beta Tags */
+  --color-accent: #f87171; /* The soft red/coral used for 'Beta' tags */
+  --color-accent-hover: #ef4444;
+
+  /* Semantic Colors (Matching the icon grid) */
+  --color-success: #10b981; /* Green icon (Content Improver) */
+  --color-warning: #f59e0b; /* Orange/Gold icon (Amazon/Facebook) */
+  --color-error: #ef4444; /* Red icon (BAB Framework) */
+
+  /* Sidebar Specific */
+  --color-sidebar-active: #e8ebf2; /* The light gray background for the active menu item */
+  --color-sidebar-text: #64748b; /* Neutral gray for inactive icons/text */
+  --color-sidebar-text-active: #1a1d23;
+}
+
+@theme inline {
+  /* --color-background: var(--background);
+  --color-foreground: var(--foreground); */
 }
 
 @media (prefers-color-scheme: dark) {

@@ -4,6 +4,8 @@ import FileDragAndDrop from "@/ui/dragandrop";
 import { useEffect, useRef, useState } from "react";
 import { streamVideoAnalysis } from "./utils/video_analysis";
 import LLMTextResponseRenderer from "@/ui/llmtextresponserenderer";
+import clsx from "clsx";
+import { Grid, Grid2X2, List } from "lucide-react";
 
 const QUEUE_LIMIT = 5;
 
@@ -145,11 +147,11 @@ function VideoAnalysis() {
     }
     uploadVideo();
   }, [processing]);
-  console.log(processing);
 
   return (
-    <div className="w-full h-full min-h-screen">
-      {videoPath.length > 0 ? (
+    <div className="w-full h-full min-h-screen bg-background">
+      <TopBar />
+      {/* {videoPath.length > 0 ? (
         <VideoPlayer src={videoPath} />
       ) : (
         <FileDragAndDrop
@@ -178,12 +180,98 @@ function VideoAnalysis() {
             }
           }}
         />
-      )}
+      )} */}
       <div className="w-full flex justify-center items-center">
         <div className="w-7/12 max-w-7/12 px-6">
           <LLMTextResponseRenderer text={response} />
         </div>
       </div>
+    </div>
+  );
+}
+
+function BadgeButton({
+  title,
+  active,
+  onClick,
+}: {
+  title: string;
+  active?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={clsx(
+        "flex justify-center items-center px-4 py-2 bg-background-soft rounded-full border border-background-mute text-primary font-semibold cursor-pointer transition-all duration-150 ease-out mr-3.5 hover:scale-105 active:scale-100 active:opacity-80",
+        !active && "text-text-muted"
+      )}
+    >
+      {title}
+    </button>
+  );
+}
+
+function TwoOptionSwitch() {
+  const [index, setIndex] = useState<number>(0);
+  return (
+    <div className="flex w-24 h-12 justify-between items-center bg-background-mute rounded-full border border-background-soft relative">
+      <div
+        className={clsx(
+          "transition-all duration-300 ease-out flex justify-center items-center absolute top-0 left-0 w-1/2 z-0 h-full pointer-events-none",
+          index === 1 && "translate-x-full"
+        )}
+      >
+        <div className="w-10/12 h-10/12 bg-background-soft rounded-full aspect-square!" />
+      </div>
+      <button
+        onClick={() => {
+          setIndex(0);
+        }}
+        className="w-1/2 h-full flex justify-center items-center z-10 cursor-pointer"
+      >
+        <Grid2X2
+          className={clsx(
+            "transition-all duration-200 ease-in-out",
+            index === 0 ? "text-text" : "text-text-muted"
+          )}
+          size={20}
+        />
+      </button>
+      <button
+        onClick={() => {
+          setIndex(1);
+        }}
+        className="w-1/2 h-full flex justify-center items-center z-10 cursor-pointer"
+      >
+        <List
+          className={clsx(
+            "transition-all duration-200 ease-in-out",
+            index === 1 ? "text-text" : "text-text-muted"
+          )}
+          size={20}
+        />
+      </button>
+    </div>
+  );
+}
+
+const BADGES = [
+  {
+    title: "All",
+  },
+];
+
+function TopBar() {
+  return (
+    <div className="w-full h-24 flex justify-between items-center px-4">
+      <div className="h-full flex justify-start items-center">
+        <BadgeButton title="All (265)" active />
+        <BadgeButton title="All (265)" />
+        <BadgeButton title="All (265)" />
+        <BadgeButton title="All (265)" />
+      </div>
+      <TwoOptionSwitch />
     </div>
   );
 }
