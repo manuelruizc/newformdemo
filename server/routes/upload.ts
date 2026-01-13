@@ -15,12 +15,24 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+// Sanitize filename function
+const sanitizeFilename = (filename: string): string => {
+  // Remove or replace special characters and spaces
+  return filename
+    .replace(/\s+/g, "_") // Replace spaces with underscores
+    .replace(/[^\w.-]/g, "_") // Replace special chars with underscores
+    .replace(/_+/g, "_") // Replace multiple underscores with single
+    .replace(/^_+|_+$/g, ""); // Remove leading/trailing underscores
+};
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadsDir);
   },
   filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${file.originalname}`;
+    // Sanitize the original filename
+    const sanitizedName = sanitizeFilename(file.originalname);
+    const uniqueName = `${Date.now()}-${sanitizedName}`;
     cb(null, uniqueName);
   },
 });
