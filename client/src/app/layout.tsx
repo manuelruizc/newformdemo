@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Roboto } from "next/font/google";
 import "./globals.css";
 import { TRPCProvider } from "@newformdemo/client/providers/trcpprovider";
 import Dashboard from "./components/dashboard";
+import { AppFlowContextProvider } from "@/providers/appflow";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const fontSans = Roboto({
+  variable: "--font-newform-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -26,11 +27,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${fontSans.className} font-newform! antialiased`}>
         <TRPCProvider>
-          <Dashboard>{children}</Dashboard>
+          <AppFlowContextProvider>
+            <Dashboard>{children}</Dashboard>
+          </AppFlowContextProvider>
         </TRPCProvider>
       </body>
     </html>
