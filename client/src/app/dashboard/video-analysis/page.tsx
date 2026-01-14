@@ -151,7 +151,7 @@ function VideoAnalysis() {
   return (
     <div className="w-full h-full min-h-screen bg-background">
       <TopBar />
-      {/* {videoPath.length > 0 ? (
+      {videoPath.length > 0 ? (
         <VideoPlayer src={videoPath} />
       ) : (
         <FileDragAndDrop
@@ -180,7 +180,7 @@ function VideoAnalysis() {
             }
           }}
         />
-      )} */}
+      )}
       <div className="w-full flex justify-center items-center">
         <div className="w-7/12 max-w-7/12 px-6">
           <LLMTextResponseRenderer text={response} />

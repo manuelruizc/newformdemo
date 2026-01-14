@@ -1,6 +1,7 @@
 import Logo from "@/ui/logo";
 import { SideboardButton } from "./sideboardbutton";
 import Button from "@/ui/button";
+import Modal from "@/ui/modal";
 
 function Dashboard({ children }: { children: React.ReactNode }) {
   return (
@@ -24,7 +25,13 @@ function Sideboard() {
           <Logo />
         </div>
       </div>
-      <Button className="w-9/12 mb-3">Chayanne</Button>
+      <Modal
+        title="Edit Profile"
+        description="Make changes to your profile here. Click save when you're done."
+        trigger={<Button className="w-9/12 mb-3">Chayanne</Button>}
+      >
+        Modal
+      </Modal>
       <SideboardButton title="Ads" path="/dashboard/video-analysis" />
       <SideboardButton title="Compare Videos" path="/dashboard/compare-ads" />
       <SideboardButton title="Willbot Tour" path="/dashboard/willbot-tour" />
