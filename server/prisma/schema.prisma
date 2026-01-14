@@ -5,23 +5,131 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
-
 datasource db {
   provider = "postgresql"
 }
 
 model Video {
-  id Int @id @default(autoincrement())
-  uri String @unique
+  id           Int      @id @default(autoincrement())
+  uri          String   @unique
   originalName String
-  uniqueName String
+  uniqueName   String
   title        String
   description  String?
   mimetype     String
   size         Int
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  // 1:1 Relationships (Unique data per video)
+  hook                  Hook?
+  demographics          Demographic?
+  performance           PerformancePrediction?
+  platformFit           PlatformFit?
+  ctaAnalysis           CtaAnalysis?
+  technicalQuality      TechnicalQuality?
+  
+  // 1:N Relationships (Arrays of data)
+  vibes                 Vibe[]
+  keyMoments            KeyMoment[]
+  suggestions           Suggestion[]
+}
+
+// --- 1:1 RELATIONSHIPS (Requires @unique on videoId) ---
+
+model Hook {
+  id           Int    @id @default(autoincrement())
+  hookStrength Int
+  reason       String
+  description  String
+  videoId      Int    @unique
+  video        Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
+
+model Demographic {
+  id        Int      @id @default(autoincrement())
+  ageRange  String
+  gender    String
+  interests String[] // Works with PostgreSQL; use String @default("[]") for others
+  videoId   Int      @unique
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
+
+model PerformancePrediction {
+  id             Int    @id @default(autoincrement())
+  estimatedCTR   Float
+  engagementRate Float
+  viralityScore  Int
+  confidence     String
+  reasoning      String
+  videoId        Int    @unique
+  video          Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
+
+model CtaAnalysis {
+  id            Int      @id @default(autoincrement())
+  ctaPresent    Boolean
+  ctaTimestamp  Float?
+  ctaClarity    Int
+  ctaType       String
+  ctaTiming     String
+  ctaEffectiveness String
+  improvement   String
+  videoId       Int      @unique
+  video         Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
+
+model TechnicalQuality {
+  id                     Int     @id @default(autoincrement())
+  videoResolution        String
+  lightingQuality        Int
+  audioClarity           Int
+  editingProfessionalism Int
+  mobileOptimized        Boolean
+  videoId                Int     @unique
+  video                  Video   @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
+
+// --- 1:N RELATIONSHIPS (No @unique on videoId) ---
+
+model Vibe {
+  id        Int    @id @default(autoincrement())
+  vibe      String
+  rate      Int
+  videoId   Int
+  video     Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
+
+model KeyMoment {
+  id        Int    @id @default(autoincrement())
+  timestamp Float
+  reason    String
+  videoId   Int
+  video     Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
+
+model Suggestion {
+  id             Int    @id @default(autoincrement())
+  recommendation String
+  reason         String
+  priority       String
+  videoId        Int
+  video          Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
+
+model PlatformFit {
+  id              Int    @id @default(autoincrement())
+  bestPlatform    String
+  tiktokScore     Int
+  reelsScore      Int
+  shortsScore     Int
+  
+  reasoning       String
+
+  // 1:1 Relation
+  videoId         Int    @unique
+  video           Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
 }

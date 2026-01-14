@@ -29,9 +29,29 @@ const ai = new GoogleGenAI({
 });
 
 app.get("/", async (req, res) => {
-  const models = await ai.models.list();
+  // await prisma.video.delete({
+  //   where: {
+  //     id: 218,
+  //   },
+  // });
+  const ans = await prisma.video.findMany({
+    include: {
+      hook: true,
+      demographics: true,
+      performance: true,
+      ctaAnalysis: true,
+      technicalQuality: true,
+      vibes: true,
+      keyMoments: true,
+      suggestions: true,
+      platformFit: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
-  res.json(models);
+  res.json(ans);
 });
 
 app.use(
@@ -43,6 +63,9 @@ app.use(
   "/trpc",
   createExpressMiddleware({
     router: appRouter,
+    createContext: () => ({
+      prisma,
+    }),
   })
 );
 const PORT = process.env.PORT || 4000;
