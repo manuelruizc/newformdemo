@@ -8,13 +8,6 @@ export const publicProcedure = t.procedure;
 export const router = t.router;
 
 export const appRouter = t.router({
-  greeting: t.procedure
-    .input(z.object({ name: z.string() }))
-    .query(({ input }) => {
-      return {
-        text: `Hello ${input.name}, tRPC is working!`,
-      };
-    }),
   video: videoRouter,
 });
 
