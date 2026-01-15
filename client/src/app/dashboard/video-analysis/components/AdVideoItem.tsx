@@ -130,7 +130,7 @@ function AdVideoItem({ video }: { video: VideoAdInterface }) {
 
   return (
     <Container>
-      <button
+      <div
         className={clsx(
           "w-[93%] aspect-9/16 flex flex-col justify-start items-center relative cursor-pointer"
         )}
@@ -221,7 +221,7 @@ function AdVideoItem({ video }: { video: VideoAdInterface }) {
             {video.title}
           </span>
         </div>
-      </button>
+      </div>
       <Modal
         title=""
         description=""
