@@ -25,7 +25,7 @@ function LevelCard({
       </Description>
       <Title className="font-black">{value}</Title>
       {percentage ? (
-        <div className="w-10/12 h-2 overflow-hidden rounded-full bg-text-muted flex justify-start items-center mt-4">
+        <div className="w-10/12 h-1.5 overflow-hidden rounded-full bg-text-muted flex justify-start items-center mt-4">
           <div
             className="h-full bg-primary"
             style={{ width: `${percentage}%` }}

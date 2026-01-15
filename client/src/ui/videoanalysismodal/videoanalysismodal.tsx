@@ -209,7 +209,6 @@ function VideoAnalysisModal() {
     isProcessingRef.current = false;
   };
   useEffect(() => {
-    console.log("###uploadingVideo", processing);
     if (processing === null) {
       return;
     }

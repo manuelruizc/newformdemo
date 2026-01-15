@@ -28,29 +28,41 @@ function getVibeEmoji(vibe: string): string {
 
 function AnalysisComplete({
   video,
+  className,
   reset,
 }: {
   video: VideoAdInterface;
   reset?: () => void;
+  className?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [keyMomentsIndex, setKeyMomentsIndex] = useState<number>(0);
   return (
-    <div className="w-full h-11/12 flex justify-start items-center px-6 py-2">
+    <div
+      className={clsx(
+        "w-full h-11/12 flex justify-start items-center px-6 py-2",
+        className
+      )}
+    >
       <div className="h-12/12 aspect-9/16 flex flex-col justify-between items-center">
         <Video
           videoRef={videoRef}
           video={video}
           setKeyMomentsIndex={setKeyMomentsIndex}
+          keyMomentsIndex={keyMomentsIndex}
         />
-        <div className="w-full px-5 flex justify-between items-center">
-          <Button variant="secondary" className="w-auto">
-            Close
-          </Button>
-          <Button onClick={reset} className="w-auto">
-            Analyze Another
-          </Button>
-        </div>
+        {reset ? (
+          <div className="w-full px-5 flex justify-between items-center">
+            <Button variant="secondary" className="w-auto">
+              Close
+            </Button>
+            (
+            <Button onClick={reset} className="w-auto">
+              Analyze Another
+            </Button>
+            )
+          </div>
+        ) : null}
       </div>
       <div
         className="flex flex-1 h-full flex-col justify-start items-center pl-12 py-6 overflow-y-scroll no-scroll"
@@ -59,10 +71,18 @@ function AnalysisComplete({
           scrollbarWidth: "none",
         }}
       >
-        <Subtitle className="self-start mb-2">{video.title}</Subtitle>
+        <Subtitle className="self-start">{video.title}</Subtitle>
         <Description className="self-start mb-8">
           {video.description}
         </Description>
+        <SectionHeader>
+          <SectionSubtitle>Creative Performance</SectionSubtitle>
+          <SectionDescription>
+            AI-driven forecasting of the creative's overall market viability,
+            analyzing projected performance across attention retention,
+            conversion probability, and organic growth potential.
+          </SectionDescription>
+        </SectionHeader>
         <SectionContainer>
           <LevelCard
             title="Hook"
@@ -80,6 +100,14 @@ function AnalysisComplete({
             percentage={(100 / 10) * video.performance.viralityScore}
           />
         </SectionContainer>
+        <SectionHeader>
+          <SectionSubtitle>Platform resonance</SectionSubtitle>
+          <SectionDescription>
+            A predictive breakdown of "thumb-stop" efficiency per channel,
+            analyzing how effectively the opening sequence is expected to engage
+            users within specific platform ecosystems.
+          </SectionDescription>
+        </SectionHeader>
         <SectionContainer>
           <LevelCard
             title="Tik Tok"
@@ -98,10 +126,18 @@ function AnalysisComplete({
           />
         </SectionContainer>
         <SectionContainer>
-          <Description className="px-2">
+          <Description className="font-bold!">
             {video.platformFit.reasoning}
           </Description>
         </SectionContainer>
+        <SectionHeader>
+          <SectionSubtitle>Aesthetic & Emotional Profile</SectionSubtitle>
+          <SectionDescription>
+            A predictive analysis of the video’s sensory appeal, identifying the
+            emotional tone, visual energy, and cultural pacing to ensure the
+            creative alignment matches the intended brand atmosphere.
+          </SectionDescription>
+        </SectionHeader>
         <SectionContainer>
           {video.vibes.map((vibe, index) => (
             <LevelCard
@@ -111,23 +147,52 @@ function AnalysisComplete({
             />
           ))}
         </SectionContainer>
+        <SectionHeader>
+          <SectionSubtitle>Predicted Audience Reach</SectionSubtitle>
+          <SectionDescription>
+            An AI-forecasted breakdown of the high-resonance viewer profile,
+            identifying the specific age groups, gender leanings, and niche
+            interests most likely to engage with this content.
+          </SectionDescription>
+        </SectionHeader>
         <SectionContainer>
           <LevelCard title="Age range" value={video.demographics.ageRange} />
           <LevelCard title="Gender" value={video.demographics.gender} />
         </SectionContainer>
-        <SectionContainer>
+        <SectionContainer className="justify-start">
           {video.demographics.interests.map((interest, index) => (
-            <span className="px-4 py-1.5 rounded-full bg-primary text-background-mute">
+            <span className="px-4 py-1.5 rounded-full bg-background-mute text-primary border-1 border-b-4 border-b-primary mr-2">
               {interest}
             </span>
           ))}
         </SectionContainer>
+        <SectionHeader>
+          <SectionSubtitle>Key Engagement Milestones</SectionSubtitle>
+          <SectionDescription>
+            Predictive analysis of specific timestamps where viewer retention
+            and emotional resonance are at their peak. These highlights identify
+            the core visual and narrative triggers—such as product reveals or
+            high-energy transitions—that are forecasted to drive the highest
+            interaction rates.
+          </SectionDescription>
+        </SectionHeader>
         <KeyMoments
           videoRef={videoRef}
           keyMomentsIndex={keyMomentsIndex}
           keyMoments={video.keyMoments}
           setKeyMomentsIndex={setKeyMomentsIndex}
         />
+        <SectionHeader>
+          <SectionSubtitle>Optimization Roadmap</SectionSubtitle>
+          <SectionDescription>
+            Actionable, AI-generated refinements designed to bridge the gap
+            between current performance and peak creative potential. This
+            analysis identifies specific technical and narrative
+            adjustments—ranging from clip sequencing to audio
+            synchronization—aimed at maximizing retention and conversion rates
+            across all targeted platforms.
+          </SectionDescription>
+        </SectionHeader>
         <div className="w-full flex flex-col justify-start items-start">
           {video.suggestions.map((suggestion) => (
             <Suggestion key={suggestion.id} suggestion={suggestion} />
@@ -137,6 +202,22 @@ function AnalysisComplete({
     </div>
   );
 }
+
+const SectionSubtitle = ({ children }: { children: React.ReactNode }) => (
+  <Subtitle className="uppercase font-bold! tracking-widest!">
+    {children}
+  </Subtitle>
+);
+const SectionDescription = ({ children }: { children: React.ReactNode }) => (
+  <Description>{children}</Description>
+);
+const SectionHeader = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="flex flex-col justify-start items-start w-full bg-red mb-6 mt-8">
+      {children}
+    </div>
+  );
+};
 
 function Suggestion({
   suggestion,

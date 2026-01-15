@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import { Epilogue, Roboto, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { TRPCProvider } from "@newformdemo/client/providers/trcpprovider";
 import Dashboard from "./components/dashboard";
@@ -10,10 +10,10 @@ const fontSans = Roboto({
   subsets: ["latin"],
 });
 
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
+const geistMono = Epilogue({
+  variable: "--font-newform-grotesk",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,7 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${fontSans.className} font-newform! antialiased`}>
+      <body
+        className={`${geistMono.className} ${fontSans.className} font-newform! antialiased`}
+      >
         <TRPCProvider>
           <AppFlowContextProvider>
             <Dashboard>{children}</Dashboard>

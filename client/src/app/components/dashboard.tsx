@@ -27,9 +27,9 @@ function Sideboard() {
         </div>
       </div>
       <Modal
-        title="Edit Profile"
-        description="Make changes to your profile here. Click save when you're done."
-        trigger={<Button className="w-9/12 mb-3">Chayanne</Button>}
+        title=""
+        description=""
+        trigger={<Button className="w-9/12 mb-3">Analyze ad</Button>}
       >
         <VideoAnalysisModal />
       </Modal>

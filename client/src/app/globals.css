@@ -15,6 +15,7 @@ body {
 
 @theme inline {
   --font-newform: "Roboto", ui-sans-serif, system-ui;
+  --font-newform-grotesk: "Space Grotesk", ui-sans-serif, system-ui;
   /* Layout & Backgrounds */
   --color-background: #f5f7fa; /* Main light gray backdrop */
   --color-background-soft: #ffffff; /* Pure white cards and sidebar */
@@ -26,10 +27,10 @@ body {
   --color-text-muted: #9ca3af; /* Light gray for placeholders/meta */
 
   /* Primary Action (The Felix Blue) */
-  --color-primary: #4f46e5; /* The vibrant blue used in "+ Create Content" */
-  --color-primary-hover: #4338ca;
-  --color-primary-glow: #eef2ff; /* Used for light blue backgrounds/selections */
-  --color-primary-dark: #3730a3;
+  --color-primary: #6735da; /* The "middle point" – balanced and professional */
+  --color-primary-hover: #5329b9; /* Deepened version for interaction */
+  --color-primary-glow: #f3f0ff; /* Soft violet-tinted background */
+  --color-primary-dark: #431fa0; /* Stronger, dark-mode friendly anchor */
 
   /* Accent / Beta Tags */
   --color-accent: #f87171; /* The soft red/coral used for 'Beta' tags */

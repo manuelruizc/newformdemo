@@ -13,7 +13,7 @@ function NewFormCard({
     <div
       onClick={onClick}
       className={clsx(
-        "rounded-2xl bg-background border-2 border-primary/40 border-b-8 border-b-primary",
+        "rounded-2xl bg-background border-2 border-primary/85 border-b-8 border-b-primary",
         className
       )}
     >

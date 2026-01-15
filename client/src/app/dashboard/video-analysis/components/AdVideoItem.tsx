@@ -2,6 +2,7 @@ import { useAppFlow } from "@/providers/appflow";
 import Button from "@/ui/button";
 import Modal from "@/ui/modal";
 import { Description, Label, Subtitle, Title } from "@/ui/text";
+import AnalysisComplete from "@/ui/videoanalysismodal/components/analysiscomplete";
 import { trpc } from "@/utils/trpc";
 import clsx from "clsx";
 import {
@@ -102,6 +103,7 @@ function Container({ children }: { children: React.ReactNode }) {
 }
 
 function AdVideoItem({ video }: { video: VideoAdInterface }) {
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const firstRender = useRef<boolean>(false);
   const [animateRecentlyAdded, setAnimateRecentlyAdded] =
@@ -122,12 +124,17 @@ function AdVideoItem({ video }: { video: VideoAdInterface }) {
     };
   }, []);
 
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
   return (
     <Container>
-      <div
+      <button
         className={clsx(
-          "w-[93%] aspect-9/16 flex flex-col justify-start items-center relative"
+          "w-[93%] aspect-9/16 flex flex-col justify-start items-center relative cursor-pointer"
         )}
+        onClick={handleOpenModal}
       >
         {animateRecentlyAdded ? (
           <div className="absolute top-0 left-0 scale-y-[1.06] scale-x-[1.09]! w-full h-full z-0 rounded-3xl bg-primary/50 animate-pulse" />
@@ -214,7 +221,16 @@ function AdVideoItem({ video }: { video: VideoAdInterface }) {
             {video.title}
           </span>
         </div>
-      </div>
+      </button>
+      <Modal
+        title=""
+        description=""
+        open={openModal}
+        onOpenChange={setOpenModal}
+        classNameContainer="py-6"
+      >
+        <AnalysisComplete video={video} className="h-full" />
+      </Modal>
     </Container>
   );
 }
@@ -341,7 +357,8 @@ function VideoBottom({
             "text-background-mute cursor-pointer mb-2",
             muted ? "translate-x-0" : "translate-x-1"
           )}
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             if (!videoRef.current) return;
             videoRef.current.muted = !videoRef.current.muted;
             setMuted(videoRef.current.muted);
@@ -349,16 +366,20 @@ function VideoBottom({
         >
           {muted ? <VolumeX /> : <Volume1 />}
         </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setOpenModal(true);
+          }}
+          className="text-error/80 cursor-pointer"
+        >
+          <Trash size={22} />
+        </button>
         <Modal
-          title="Edit Profile"
-          description="Make changes to your profile here. Click save when you're done."
+          title=""
+          description=""
           className="w-auto! px-20 h-auto! pt-16 pb-8 rounded-2xl! border-2 border-b-8 border-primary"
           classNameContainer="flex! flex-col! justify-center! items-start!"
-          trigger={
-            <button className="text-error/80 cursor-pointer">
-              <Trash size={22} />
-            </button>
-          }
           open={openModal}
           onOpenChange={setOpenModal}
         >

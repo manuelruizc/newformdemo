@@ -28,7 +28,7 @@ export const Description = ({
   className?: string;
 }) => (
   <p
-    className={`text-base text-shadow-text-muted leading-relaxed ${className}`}
+    className={`text-base font-newform-grotesk! font-medium text-text-secondary leading-relaxed ${className}`}
   >
     {children}
   </p>
