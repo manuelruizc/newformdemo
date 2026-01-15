@@ -5,11 +5,51 @@
   --foreground: #171717;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-newform-sans);
+}
+
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-newform: "Roboto", ui-sans-serif, system-ui;
+  --font-newform-grotesk: "Space Grotesk", ui-sans-serif, system-ui;
+  /* Layout & Backgrounds */
+  --color-background: #f5f7fa; /* Main light gray backdrop */
+  --color-background-soft: #ffffff; /* Pure white cards and sidebar */
+  --color-background-mute: #edf1f7; /* Subtle hover states/dividers */
+
+  /* Text & Typography */
+  --color-text: #1a1d23; /* Deep slate/black for headings */
+  --color-text-secondary: #4a5568; /* Medium gray for descriptions */
+  --color-text-muted: #9ca3af; /* Light gray for placeholders/meta */
+
+  /* Primary Action (The Felix Blue) */
+  --color-primary: #6735da; /* The "middle point" – balanced and professional */
+  --color-primary-hover: #5329b9; /* Deepened version for interaction */
+  --color-primary-glow: #f3f0ff; /* Soft violet-tinted background */
+  --color-primary-dark: #431fa0; /* Stronger, dark-mode friendly anchor */
+
+  /* Accent / Beta Tags */
+  --color-accent: #f87171; /* The soft red/coral used for 'Beta' tags */
+  --color-accent-hover: #ef4444;
+
+  /* Semantic Colors (Matching the icon grid) */
+  --color-success: #10b981; /* Green icon (Content Improver) */
+  --color-warning: #f59e0b; /* Orange/Gold icon (Amazon/Facebook) */
+  --color-error: #c25e5e; /* Red icon (BAB Framework) */
+
+  /* Sidebar Specific */
+  --color-sidebar-active: #e8ebf2; /* The light gray background for the active menu item */
+  --color-sidebar-text: #64748b; /* Neutral gray for inactive icons/text */
+  --color-sidebar-text-active: #1a1d23;
+}
+
+@theme inline {
+  /* --color-background: var(--background);
+  --color-foreground: var(--foreground); */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,10 +57,4 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
 }

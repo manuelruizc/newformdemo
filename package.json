@@ -24,9 +24,11 @@
     ]
   },
   "dependencies": {
+    "@google/genai": "^1.35.0",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "dotenv": "^17.2.3",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "tinykeys": "^3.0.0"
   }
 }
