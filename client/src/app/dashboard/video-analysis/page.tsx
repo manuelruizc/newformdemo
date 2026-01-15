@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { streamVideoAnalysis } from "./utils/video_analysis";
 import LLMTextResponseRenderer from "@/ui/llmtextresponserenderer";
 import clsx from "clsx";
-import { Grid, Grid2X2, List, Search, X } from "lucide-react";
+import { ChevronDown, Grid, Grid2X2, List, Search, X } from "lucide-react";
 import { trpc } from "@/utils/trpc";
 import AdVideoItem, { VideoAdInterface } from "./components/AdVideoItem";
 import EmptyStateList from "./components/EmptyStateList";
@@ -13,6 +13,44 @@ import { useInView } from "react-intersection-observer";
 import { useDebounce } from "@/utils/useDebounce";
 import { useAppFlow } from "@/providers/appflow";
 import useKeyboardShortcuts from "./utils/shortcuts";
+
+const SORT_OPTIONS = [
+  {
+    title: "Newest",
+    value: "newest",
+  },
+  {
+    title: "Oldest",
+    value: "oldest",
+  },
+  {
+    title: "Hook (high to low)",
+    value: "hook-high",
+  },
+  {
+    title: "Hook (low to high)",
+    value: "hook-low",
+  },
+];
+
+const FILTER_OPTIONS = [
+  {
+    title: "All",
+    value: "all",
+  },
+  {
+    title: "High",
+    value: "high",
+  },
+  {
+    title: "Medium",
+    value: "medium",
+  },
+  {
+    title: "Low",
+    value: "low",
+  },
+];
 
 function VideoAnalysis() {
   const { adCreated, addToast } = useAppFlow();
@@ -199,6 +237,29 @@ function BadgeButton({
   );
 }
 
+function BadgeDropdown({
+  title,
+  active,
+  onClick,
+}: {
+  title: string;
+  active?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={clsx(
+        "flex justify-center items-center px-4 py-2 bg-background-soft rounded-full border border-background-mute text-primary font-semibold cursor-pointer transition-all duration-150 ease-out mr-3.5 hover:scale-105 active:scale-100 active:opacity-80",
+        !active && "text-text-muted"
+      )}
+    >
+      <span>{title}</span>
+      <ChevronDown className="ml-2" />
+    </button>
+  );
+}
+
 function TwoOptionSwitch() {
   const [index, setIndex] = useState<number>(0);
   return (
@@ -265,53 +326,83 @@ function TopBar({
   handleSearchChange: (newSearch: string) => void;
 }) {
   return (
-    <div className="w-full h-24 flex justify-between items-center px-4 relative">
-      <div className="h-full flex justify-start items-center">
-        <BadgeButton
-          title="All"
-          onClick={() => handleFilterChange("all")}
-          active={filterBy === "all"}
+    <div className="w-full h-24 flex justify-between items-center px-16 relative">
+      <div className="flex justify-center items-center">
+        <DropdownSelect
+          options={SORT_OPTIONS}
+          onClick={(type: any) => {
+            handleSortChange(type);
+          }}
         />
-        <BadgeButton
-          title="High"
-          onClick={() => handleFilterChange("high")}
-          active={filterBy === "high"}
-        />
-        <BadgeButton
-          title="Medium"
-          onClick={() => handleFilterChange("medium")}
-          active={filterBy === "medium"}
-        />
-        <BadgeButton
-          title="Low"
-          onClick={() => handleFilterChange("low")}
-          active={filterBy === "low"}
-        />
-      </div>
-      <div className="h-full flex justify-start items-center">
-        <BadgeButton
-          title="Newest"
-          onClick={() => handleSortChange("newest")}
-          active={sortBy === "newest"}
-        />
-        <BadgeButton
-          title="Hook (high to low)"
-          onClick={() => handleSortChange("hook-high")}
-          active={sortBy === "hook-high"}
-        />
-        <BadgeButton
-          title="Hook (low to high)"
-          onClick={() => handleSortChange("hook-low")}
-          active={sortBy === "hook-low"}
-        />
-        <BadgeButton
-          title="Oldest"
-          onClick={() => handleSortChange("oldest")}
-          active={sortBy === "oldest"}
+        <DropdownSelect
+          options={FILTER_OPTIONS}
+          onClick={(type: any) => {
+            handleFilterChange(type);
+          }}
         />
       </div>
       <div className="w-10" />
       <SearchInput handleSearchChange={handleSearchChange} />
+    </div>
+  );
+}
+
+function DropdownSelect({
+  options,
+  onClick,
+}: {
+  options: { value: string; title: string }[];
+  onClick: (type: string) => void;
+}) {
+  const [title, setTitle] = useState<string>(options[0].title);
+  const [active, setActive] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setActive(false);
+      }
+    }
+
+    if (active) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [active]);
+
+  return (
+    <div
+      ref={dropdownRef}
+      className={clsx("relative", !active && "text-text-muted")}
+    >
+      <BadgeDropdown title={title} onClick={() => setActive(!active)} />
+      <div
+        className={clsx(
+          "absolute bottom-0 left-0 translate-y-[98%] -translate-x-10 w-48 bg-background-soft border border-b-8 border-primary z-100000 rounded-2xl py-2 pointer-events-none duration-150 transition-all ease-in-out opacity-0",
+          active && "pointer-events-auto! opacity-100 translate-y-[102%]"
+        )}
+      >
+        {options.map((option, index) => (
+          <button
+            key={option.value}
+            className="w-full py-2 hover:bg-background-mute cursor-pointer rounded-lg group"
+            onClick={() => {
+              onClick(option.value);
+              setTitle(option.title);
+              setActive(false);
+            }}
+          >
+            <span className="group-hover:text-primary">{option.title}</span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -349,8 +440,7 @@ function SearchInput({
   return (
     <div
       className={clsx(
-        "duration-300 transition-all ease-in-out absolute top-0 left-0 w-full h-full flex justify-end items-center z-10 pointer-events-none px-4",
-        active && "px-4"
+        "duration-300 transition-all ease-in-out absolute top-0 left-0 w-full h-full flex justify-end items-center z-10 pointer-events-none px-16"
       )}
     >
       <div
@@ -363,7 +453,7 @@ function SearchInput({
           ref={ref}
           type="text"
           className={clsx(
-            "w-full h-full rounded-full pl-6 font-semibold",
+            "w-full h-full rounded-full pl-6 font-semibold pointer-events-auto!",
             !active && "w-0! pointer-events-none! opacity-0 h-0!"
           )}
           placeholder="Search..."
@@ -380,7 +470,7 @@ function SearchInput({
         <button
           className={clsx(
             "absolute top-0 left-0 w-full h-full flex justify-start items-center pl-3 border-2 border-text/50 rounded-full pointer-events-auto duration-300 ease-linear transition-all",
-            active && "pointer-events-none opacity-0"
+            active && "pointer-events-none! opacity-0"
           )}
           onClick={() => {
             ref.current?.focus();
