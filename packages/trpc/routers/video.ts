@@ -3,6 +3,7 @@ import { z } from "zod";
 import fs from "fs";
 import path from "path";
 import { prisma } from "../../../server/lib/prisma";
+import { Prisma } from "server/generated/prisma/client";
 
 const HookFilterEnum = z.enum(["all", "high", "medium", "low"]);
 const SortByEnum = z.enum(["newest", "oldest", "hook-high", "hook-low"]);
@@ -195,7 +196,12 @@ export const videoRouter = router({
     .query(async ({ input, ctx }) => {
       const { searchTerm, filterBy, sortBy, limit, cursor } = input;
 
-      const where: any = {};
+      const where: Prisma.VideoWhereInput = {
+        // This is the "AND" safeguard for all 4 relations
+        demographics: { isNot: null },
+        performance: { isNot: null },
+        platformFit: { isNot: null },
+      };
 
       if (searchTerm && searchTerm.trim() !== "") {
         where.OR = [
@@ -216,9 +222,11 @@ export const videoRouter = router({
 
       if (filterBy !== "all") {
         where.hook = {
-          hookStrength: {
-            gte: filterBy === "high" ? 7 : filterBy === "medium" ? 4 : 0,
-            lte: filterBy === "high" ? 10 : filterBy === "medium" ? 6 : 3,
+          is: {
+            hookStrength: {
+              gte: filterBy === "high" ? 7 : filterBy === "medium" ? 4 : 0,
+              lte: filterBy === "high" ? 10 : filterBy === "medium" ? 6 : 3,
+            },
           },
         };
       }
