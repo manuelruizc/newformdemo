@@ -1,17 +1,13 @@
 import Logo from "@/ui/logo";
 import { SideboardButton } from "./sideboardbutton";
-import Button from "@/ui/button";
-import Modal from "@/ui/modal";
-import VideoAnalysisModal from "@/ui/videoanalysismodal/videoanalysismodal";
+import Topbar from "./topbar";
 
 function Dashboard({ children }: { children: React.ReactNode }) {
   return (
     <div className="w-full h-full min-h-screen bg-background-mute flex justify-start items-start">
       <Sideboard />
       <div className="w-full h-full min-h-screen flex flex-col justify-start items-start pl-64">
-        <div className="w-full h-20 px-6 bg-background-soft border-b border-b-background-mute flex justify-between items-center">
-          <span className="text-text text-lg font-bold">Ads</span>
-        </div>
+        <Topbar />
         {children}
       </div>
     </div>
@@ -26,13 +22,7 @@ function Sideboard() {
           <Logo />
         </div>
       </div>
-      <Modal
-        title=""
-        description=""
-        trigger={<Button className="w-9/12 mb-3">Analyze ad</Button>}
-      >
-        <VideoAnalysisModal />
-      </Modal>
+
       <SideboardButton title="Ads" path="/dashboard/video-analysis" />
       <SideboardButton title="Compare Videos" path="/dashboard/compare-ads" />
       <SideboardButton title="Willbot Tour" path="/dashboard/willbot-tour" />
