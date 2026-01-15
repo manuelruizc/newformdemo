@@ -18,13 +18,17 @@ export const Toast: React.FC<ToastProps> = ({
   duration = 4000,
 }) => {
   const types: Record<ToastType, string> = {
-    info: "bg-background-soft border-[#2a3532]/50",
-    success:
-      "bg-background-soft border-primary/50 shadow-[0_0_20px_rgba(0,250,154,0.2)]",
-    warning:
-      "bg-background-soft border-[#FFD700]/50 shadow-[0_0_20px_rgba(255,215,0,0.2)]",
-    error:
-      "bg-background-soft border-error/50 shadow-[0_0_20px_rgba(255,51,102,0.2)]",
+    info: "bg-background-soft border-primary/70 border-b-primary",
+    success: "bg-background-soft border-success/70 border-b-success",
+    warning: "bg-background-soft border-warning/70 border-b-warning ",
+    error: "bg-background-soft border-error/70 border-b-error",
+  };
+
+  const text: Record<ToastType, string> = {
+    info: "text-text",
+    success: "text-success",
+    warning: "text-warning",
+    error: "text-error",
   };
 
   useEffect(() => {
@@ -35,13 +39,13 @@ export const Toast: React.FC<ToastProps> = ({
 
   return (
     <div
-      className={`${types[type]} border-2 rounded-lg p-4 flex items-center justify-between gap-3 shadow-lg min-w-[300px] backdrop-blur-sm`}
+      className={`${types[type]} border-2 border-b-8 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-lg min-w-[300px] backdrop-blur-sm z-[99999999999999999]`}
     >
-      <span className="text-white text-sm">{message}</span>
+      <span className="text-text text-sm">{message}</span>
       {onClose ? (
         <button
           onClick={onClose}
-          className="text-text-muted hover:text-white transition-colors hover:cursor-pointer"
+          className={`transition-colors hover:cursor-pointer ${text[type]}`}
         >
           <X />
         </button>

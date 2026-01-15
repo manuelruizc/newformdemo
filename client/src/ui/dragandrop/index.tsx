@@ -9,6 +9,7 @@ import React, {
 } from "react";
 import { Upload, X, File, Image, FileText } from "lucide-react";
 import { trpc } from "@/utils/trpc";
+import { useAppFlow } from "@/providers/appflow";
 
 interface UploadedFile {
   id: string;
@@ -23,6 +24,7 @@ function FileDragAndDrop({
   accept?: string[];
   onHandleFiles?: (files: UploadedFile[]) => void;
 }): React.ReactElement {
+  const { addToast } = useAppFlow();
   const filesRef = useRef<UploadedFile[]>([]);
   const [numberOfFiles, setNumberOfFiles] = useState<number>(0);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -62,11 +64,19 @@ function FileDragAndDrop({
         file,
       };
       if (!file.type.startsWith("video")) {
-        console.error("Not a video");
+        addToast({
+          type: "error",
+          duration: 4000,
+          message: "Invalid file. Only videos are accepted",
+        });
         continue;
       }
       if (!file.type.endsWith("mp4") && !file.type.endsWith("webm")) {
-        console.error("Not a video format supported");
+        addToast({
+          type: "error",
+          duration: 4000,
+          message: "Video format not compatible. Try to use mp4 or webm",
+        });
         continue;
       }
 

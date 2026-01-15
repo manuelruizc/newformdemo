@@ -12,9 +12,10 @@ import EmptyStateList from "./components/EmptyStateList";
 import { useInView } from "react-intersection-observer";
 import { useDebounce } from "@/utils/useDebounce";
 import { useAppFlow } from "@/providers/appflow";
+import useKeyboardShortcuts from "./utils/shortcuts";
 
 function VideoAnalysis() {
-  const { adCreated } = useAppFlow();
+  const { adCreated, addToast } = useAppFlow();
   const { ref, inView } = useInView({
     threshold: 0.1,
   });
@@ -28,31 +29,24 @@ function VideoAnalysis() {
   const adsSaved = useRef<Set<number>>(new Set());
 
   const {
-    data, // All pages of data
-    fetchNextPage, // Function to load more
-    hasNextPage, // Boolean: is there more data?
-    isFetchingNextPage, // Boolean: is it loading more?
-    isLoading, // Boolean: initial load
-    refetch, // Function to reset and refetch
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    refetch,
   } = trpc.video.searchAndFilter.useInfiniteQuery(
-    // First argument: query input (without cursor)
     {
       searchTerm,
       filterBy,
       sortBy,
       limit: 12,
     },
-    // Second argument: configuration
+
     {
-      // ✅ This function tells tRPC how to get the next cursor
       getNextPageParam: (lastPage) => {
-        // lastPage is the result from your backend: { videos, nextCursor }
-        // Return the nextCursor to fetch the next page
-        // If it's undefined, there are no more pages
         return lastPage.nextCursor;
       },
-
-      // Optional: Configure refetch behavior
       refetchOnWindowFocus: false,
       refetchOnMount: false,
     }
@@ -83,10 +77,8 @@ function VideoAnalysis() {
 
           const updatedPages = [...oldData.pages];
           console.log("added");
-          // ✅ Different insertion logic based on sort
           switch (sortBy) {
             case "newest":
-              // Add to beginning of first page
               updatedPages[0] = {
                 ...updatedPages[0],
                 videos: [newVideo, ...updatedPages[0].videos],
@@ -94,7 +86,6 @@ function VideoAnalysis() {
               break;
 
             case "oldest":
-              // Add to end of last page
               const lastPageIndex = updatedPages.length - 1;
               updatedPages[lastPageIndex] = {
                 ...updatedPages[lastPageIndex],
@@ -104,9 +95,7 @@ function VideoAnalysis() {
 
             case "hook-high":
             case "hook-low":
-              // For hook-based sorting, just refetch to maintain correct order
-              // Inserting in correct position is complex, refetch is cleaner
-              return oldData; // Don't modify, will refetch below
+              return oldData;
           }
 
           return {
@@ -115,14 +104,10 @@ function VideoAnalysis() {
           };
         }
       );
-
-      // ✅ If hook-based sort, refetch to get correct order
       if (sortBy === "hook-high" || sortBy === "hook-low") {
         refetch();
       }
-    } catch (e) {
-      console.error("error", e);
-    }
+    } catch (e) {}
   };
   const allVideos = data?.pages.flatMap((page) => page.videos) ?? [];
   const handleFilterChange = (newFilter: typeof filterBy) => {
@@ -140,7 +125,6 @@ function VideoAnalysis() {
   };
 
   useEffect(() => {
-    // If the bottom div is visible and there is more data, fetch it
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
@@ -326,7 +310,7 @@ function TopBar({
           active={sortBy === "oldest"}
         />
       </div>
-      <TwoOptionSwitch />
+      <div className="w-10" />
       <SearchInput handleSearchChange={handleSearchChange} />
     </div>
   );
@@ -341,6 +325,14 @@ function SearchInput({
   const [active, setActive] = useState<boolean>(false);
   const [text, setText] = useState<string>("");
   const debouncedSearch = useDebounce(text, 500);
+  useKeyboardShortcuts({
+    handlers: {
+      "$mod+K": (event) => {
+        setActive(true);
+        ref.current?.focus();
+      },
+    },
+  });
 
   useEffect(() => {
     handleSearchChange(debouncedSearch);
@@ -357,13 +349,13 @@ function SearchInput({
   return (
     <div
       className={clsx(
-        "duration-300 transition-all ease-in-out absolute top-0 left-0 w-full h-full flex justify-end items-center z-10 pointer-events-none",
+        "duration-300 transition-all ease-in-out absolute top-0 left-0 w-full h-full flex justify-end items-center z-10 pointer-events-none px-4",
         active && "px-4"
       )}
     >
       <div
         className={clsx(
-          "w-10 h-10 bg-background-soft mr-[8.5%] rounded-full aspect-square! relative duration-300 transition-all ease-in-out flex justify-start items-center",
+          "w-24 h-10 bg-background-soft rounded-full aspect-square! relative duration-300 transition-all ease-in-out flex justify-start items-center",
           active && "w-full! mr-0! border-2 border-primary/70"
         )}
       >
@@ -371,7 +363,7 @@ function SearchInput({
           ref={ref}
           type="text"
           className={clsx(
-            "w-full h-full rounded-full pr-10 pl-6 font-semibold",
+            "w-full h-full rounded-full pl-6 font-semibold",
             !active && "w-0! pointer-events-none! opacity-0 h-0!"
           )}
           placeholder="Search..."
@@ -383,14 +375,31 @@ function SearchInput({
             }
           }}
           onBlur={() => setActive(false)}
+          onFocus={() => setActive(true)}
         />
+        <button
+          className={clsx(
+            "absolute top-0 left-0 w-full h-full flex justify-start items-center pl-3 border-2 border-text/50 rounded-full pointer-events-auto duration-300 ease-linear transition-all",
+            active && "pointer-events-none opacity-0"
+          )}
+          onClick={() => {
+            ref.current?.focus();
+            setActive(true);
+          }}
+        >
+          <span className="font-bold text-text-secondary">⌘ + K</span>
+        </button>
         <button
           onClick={() => setActive((prev) => !prev)}
           className={clsx(
-            "absolute top-0 right-0 w-10 h-10 flex justify-center items-center rounded-full transition-all duration-200 ease-in-out cursor-pointer pointer-events-auto!"
+            "absolute top-0 right-0 w-10 h-10 mr-0.5 flex justify-center items-center rounded-full transition-all duration-200 ease-in-out cursor-pointer pointer-events-auto!"
           )}
         >
-          {active ? <X size={20} className="mb-0.5" /> : <Search size={20} />}
+          {active ? (
+            <X size={20} className="mb-0.5" />
+          ) : (
+            <Search size={20} className="mb-0.5" />
+          )}
         </button>
       </div>
     </div>

@@ -38,7 +38,7 @@ body {
   /* Semantic Colors (Matching the icon grid) */
   --color-success: #10b981; /* Green icon (Content Improver) */
   --color-warning: #f59e0b; /* Orange/Gold icon (Amazon/Facebook) */
-  --color-error: #ef4444; /* Red icon (BAB Framework) */
+  --color-error: #c25e5e; /* Red icon (BAB Framework) */
 
   /* Sidebar Specific */
   --color-sidebar-active: #e8ebf2; /* The light gray background for the active menu item */

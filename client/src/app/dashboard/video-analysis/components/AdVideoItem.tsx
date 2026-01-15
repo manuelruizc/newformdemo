@@ -1,3 +1,8 @@
+import { useAppFlow } from "@/providers/appflow";
+import Button from "@/ui/button";
+import Modal from "@/ui/modal";
+import { Description, Label, Subtitle, Title } from "@/ui/text";
+import { trpc } from "@/utils/trpc";
 import clsx from "clsx";
 import {
   Activity,
@@ -149,7 +154,11 @@ function AdVideoItem({ video }: { video: VideoAdInterface }) {
               engagementRate={video.performance.engagementRate}
               viralityScore={video.performance.viralityScore}
             />
-            <VideoBottom videoRef={videoRef} createdAt={video.createdAt} />
+            <VideoBottom
+              id={video.id}
+              videoRef={videoRef}
+              createdAt={video.createdAt}
+            />
             <KeyMomentsDescription
               reason={
                 keyMomentsIndex < 0
@@ -224,7 +233,9 @@ function KeyMomentsDescription({ reason: _reason }: { reason: string | null }) {
   return (
     <span
       className={`duration-500 transition-all ease-in-out absolute bottom-0 right-0 p-4 w-full rounded-lg bg-background-soft border-b-4 text-base font-semibold text-text flex justify-center items-center ${
-        reason === null ? "opacity-0" : "opacity-100 translate-y-full"
+        reason === null
+          ? "opacity-0 pointer-events-none"
+          : "opacity-100 translate-y-full pointer-events-none"
       }`}
     >
       <span
@@ -272,11 +283,14 @@ function Duration({ duration }: { duration: string }) {
 function VideoBottom({
   createdAt,
   videoRef,
+  id,
 }: {
+  id: number;
   createdAt: string;
   videoRef: RefObject<HTMLVideoElement | null>;
 }) {
   const [muted, setMuted] = useState<boolean>(true);
+
   const date = useMemo(() => {
     const _date = new Date(createdAt);
     return _date.toLocaleDateString("en-US", {
@@ -285,6 +299,38 @@ function VideoBottom({
       year: "numeric",
     });
   }, [createdAt]);
+  const { addToast } = useAppFlow();
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const utils = trpc.useContext();
+
+  const deleteVideo = trpc.video.delete.useMutation({
+    onSuccess: () => {
+      utils.video.searchAndFilter.invalidate();
+      addToast({
+        type: "success",
+        message: "The ad was deleted successfuly",
+        duration: 4000,
+      });
+    },
+    onError: (error) => {
+      addToast({
+        type: "error",
+        message: "Unable to delete toast",
+        duration: 4000,
+      });
+    },
+  });
+
+  const handleDelete = () => {
+    deleteVideo.mutate({ id });
+  };
+
+  useEffect(() => {
+    if (!openModal) return;
+    if (!videoRef.current) return;
+    videoRef.current.pause();
+    videoRef.current.currentTime = 0;
+  }, [openModal]);
 
   return (
     <div className="absolute bottom-0 left-0 w-full px-4 py-1.5 flex justify-between items-end">
@@ -303,9 +349,38 @@ function VideoBottom({
         >
           {muted ? <VolumeX /> : <Volume1 />}
         </button>
-        <button className="text-error/80 cursor-pointer">
-          <Trash size={22} />
-        </button>
+        <Modal
+          title="Edit Profile"
+          description="Make changes to your profile here. Click save when you're done."
+          className="w-auto! px-20 h-auto! pt-16 pb-8 rounded-2xl! border-2 border-b-8 border-primary"
+          classNameContainer="flex! flex-col! justify-center! items-start!"
+          trigger={
+            <button className="text-error/80 cursor-pointer">
+              <Trash size={22} />
+            </button>
+          }
+          open={openModal}
+          onOpenChange={setOpenModal}
+        >
+          <Subtitle className="mb-2">
+            Are you sure you want to delete this add?
+          </Subtitle>
+          <Label className="mb-5">This action can't be reverted.</Label>
+          <div className="w-full flex justify-end items-end mt-6">
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setOpenModal(false);
+              }}
+              className="mr-2"
+            >
+              Close
+            </Button>
+            <Button variant="danger" onClick={handleDelete}>
+              Delete
+            </Button>
+          </div>
+        </Modal>
       </div>
     </div>
   );

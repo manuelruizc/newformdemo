@@ -4,10 +4,14 @@ export function streamVideoAnalysis(
     onChunk,
     onDone,
     onError,
+    forceBug,
+    index,
   }: {
     onChunk?: (chunk: string, eventType: any) => void;
     onDone?: (result: any) => void;
-    onError?: (err: any) => void;
+    onError?: (err: any, type: "json" | "error" | "connection") => void;
+    forceBug?: boolean;
+    index?: number;
   }
 ) {
   const es = new EventSource(
@@ -28,22 +32,19 @@ export function streamVideoAnalysis(
 
     try {
       // Parse the JSON string sent from server
+      if (forceBug && index && index < 0) {
+        let errorJSON = JSON.parse(e.data + "}}{]][");
+      }
       const result = JSON.parse(e.data);
-      console.log("✅ Parsed result:", result);
 
       resultReceived = true;
 
-      // Call onDone with the parsed object
       if (onDone) {
         onDone(result);
       }
     } catch (err) {
-      console.error("❌ Failed to parse JSON:", err);
-      console.error("Raw data was:", e.data);
-      console.error("Data type:", typeof e.data);
-
       if (onError) {
-        onError(err);
+        onError(err, "json");
       }
     }
   });
@@ -59,18 +60,14 @@ export function streamVideoAnalysis(
   });
 
   es.addEventListener("error", (e) => {
-    console.error("❌ Error event received:", e);
-
     if (onError) {
-      onError(e);
+      onError(e, "error");
     }
   });
 
   es.onerror = (err) => {
-    console.error("❌ SSE connection error:", err);
-
     if (onError) {
-      onError(err);
+      onError(err, "error");
     }
 
     es.close();

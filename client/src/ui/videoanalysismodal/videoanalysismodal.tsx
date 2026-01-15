@@ -30,25 +30,59 @@ interface UploadedFile {
 }
 
 function VideoAnalysisModal() {
-  const { updateAdCreated } = useAppFlow();
+  const { updateAdCreated, addToast } = useAppFlow();
   const [video, setVideo] = useState<VideoAdInterface | null>(null);
   const filesRef = useRef<UploadedFile[]>([]);
   const [response, setResponse] = useState<string>("");
   const [analysisCompleted, setAnalysisCompleted] = useState<boolean>(false);
   const [processing, setProcessing] = useState<UploadedFile | null>(null);
+  const processingRef = useRef<UploadedFile | null>(null);
   const queueRef = useRef<string[]>([]);
   const isProcessingRef = useRef<boolean>(false);
+  const videoId = useRef<number>(-1);
   const mutation = trpc.video.saveAnalysis.useMutation({
     onSuccess: (data) => {
       setVideo(data as VideoAdInterface);
       setAnalysisCompleted(true);
       updateAdCreated(data as VideoAdInterface);
-      console.log("Analysis saved to database!", data);
     },
     onError: (err) => {
-      console.error("Save failed:", err.message);
+      addToast({
+        type: "error",
+        duration: 6000,
+        message:
+          "There was an error with the analysis. The analysis is starting again",
+      });
+      redoAnalysis();
     },
   });
+
+  const deleteVideo = trpc.video.delete.useMutation({
+    onSuccess: () => {
+      if (!processingRef.current) {
+        addToast({
+          type: "error",
+          duration: 6000,
+          message: "Unable to analyze the video in this moment. Try again.",
+        });
+        return;
+      }
+      filesRef.current = [processingRef.current];
+      setResponse("");
+      setProcessing(null);
+      setTimeout(() => {
+        setProcessing(processingRef.current);
+      }, 1000);
+    },
+    onError: (error) => {
+      addToast({
+        type: "error",
+        duration: 6000,
+        message: "Unable to analyze the video in this moment. Try again.",
+      });
+    },
+  });
+  const index = useRef<number>(-1);
   const saveVideo = async (uploadedFile: UploadedFile) => {
     try {
       const formData = new FormData();
@@ -68,11 +102,18 @@ function VideoAnalysisModal() {
         await uploadRes.json();
 
       if (!success) {
-        console.error("Error on video upload", error);
+        addToast({
+          type: "error",
+          duration: 4000,
+          message: "Error while uploading the video. Try again.",
+        });
         return;
       }
+      videoId.current = data.id;
       let rawBuffer = "";
       const stream = streamVideoAnalysis(data.id, {
+        forceBug: false,
+        index: index.current++,
         onChunk: (text, eventType) => {
           if (eventType === "reasoning") {
             rawBuffer += JSON.parse(text);
@@ -92,15 +133,41 @@ function VideoAnalysisModal() {
             analysis,
           });
         },
+        onError: (err, type) => {
+          if (type === "json") {
+            addToast({
+              type: "error",
+              duration: 6000,
+              message:
+                "There was an error with the analysis. The analysis is starting again",
+            });
+            setTimeout(() => {
+              redoAnalysis();
+            }, 1000);
+          }
+        },
       });
     } catch (error) {
-      console.error("Upload error:", error);
-      alert(
-        "Upload failed: " +
-          (error instanceof Error ? error.message : "Unknown error")
-      );
+      addToast({
+        type: "error",
+        duration: 6000,
+        message:
+          "There was an error with the analysis. The analysis is starting again",
+      });
+      redoAnalysis();
     } finally {
     }
+  };
+  const redoAnalysis = async () => {
+    try {
+      if (videoId.current < 0) return;
+      setVideo(null);
+      setResponse("");
+      setAnalysisCompleted(false);
+      queueRef.current = [];
+      isProcessingRef.current = false;
+      deleteVideo.mutate({ id: videoId.current });
+    } catch (e) {}
   };
   const uploadVideo = async () => {
     try {
@@ -113,7 +180,11 @@ function VideoAnalysisModal() {
     } catch (e) {
       setProcessing(null);
       filesRef.current = [];
-      console.error(e);
+      addToast({
+        type: "error",
+        duration: 4000,
+        message: "Error while uploading the video. Try again.",
+      });
       return e;
     }
   };
@@ -138,9 +209,11 @@ function VideoAnalysisModal() {
     isProcessingRef.current = false;
   };
   useEffect(() => {
+    console.log("###uploadingVideo", processing);
     if (processing === null) {
       return;
     }
+    processingRef.current = processing;
     uploadVideo();
   }, [processing]);
   return (
@@ -155,7 +228,6 @@ function VideoAnalysisModal() {
           onHandleFiles={(files: UploadedFile[]) => {
             const length = filesRef.current.length;
             if (length > QUEUE_LIMIT) {
-              console.error("Limit of video processing");
               return;
             }
             const nextLength = length + files.length;

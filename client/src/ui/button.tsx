@@ -14,7 +14,7 @@ const VARIANTS: Record<ButtonVariant, string> = {
     "bg-transparent hover:bg-white/5 active:bg-white/10 text-foreground outline-white/0 active:outline-white/20",
 
   danger:
-    "bg-red-500 hover:bg-red-600 active:bg-red-700 text-white outline-red-700/0 active:outline-red-700/30",
+    "bg-error hover:bg-error/80 active:bg-error text-white outline-error/0 active:outline-error/30",
 };
 
 function Button({
@@ -32,7 +32,7 @@ function Button({
     <button
       onClick={onClick}
       className={clsx(
-        "px-6 py-2.5 rounded-xl outline-solid flex justify-center items-center cursor-pointer select-none transition-colors",
+        "px-6 py-2 rounded-xl outline-solid flex justify-center items-center cursor-pointer select-none transition-colors",
         VARIANTS[variant],
         className
       )}

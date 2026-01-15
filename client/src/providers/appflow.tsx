@@ -22,7 +22,7 @@ interface ToastState {
 
 interface AppFlowContextInterface {
   adCreated: VideoAdInterface | null;
-  addToast: (toast: ToastState) => void;
+  addToast: (toast: Omit<ToastState, "id">) => void;
   createUUID: () => string;
   removeToast: (id: string) => void;
   updateAdCreated: (ad: VideoAdInterface) => void;
@@ -44,8 +44,16 @@ export const AppFlowContextProvider = ({
   const [adCreated, setAdCreated] = useState<VideoAdInterface | null>(null);
   const [toasts, setToasts] = useState<ToastState[]>([]);
 
-  const addProcessToast = (type: ToastState) => {
-    setToasts((prev) => [...prev, { ...type }]);
+  const addProcessToast = (toast: Omit<ToastState, "id">) => {
+    const id = uuidv4();
+    const newToast: ToastState = {
+      ...toast,
+      id,
+      onClose: () => {
+        removeProcessToast(id);
+      },
+    };
+    setToasts((prev) => [...prev, { ...newToast }]);
   };
 
   const removeProcessToast = (id: string) => {
