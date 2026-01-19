@@ -40,11 +40,20 @@ function AnalysisComplete({
   return (
     <div
       className={clsx(
-        "w-full h-11/12 flex justify-start items-center px-6 py-2",
-        className
+        "w-full h-11/12 flex flex-col lg:flex-row justify-start items-center px-6 py-2 overflow-y-scroll",
+        className,
       )}
+      style={{
+        msOverflowStyle: "none",
+        scrollbarWidth: "none",
+      }}
     >
-      <div className="h-12/12 aspect-9/16 flex flex-col justify-between items-center">
+      <div
+        className={clsx(
+          "w-10/12 sm:w-6/12 lg:h-12/12 lg:w-auto mt-0 aspect-9/16 flex flex-col justify-between items-center",
+          reset && "mb-8 lg:mb-0",
+        )}
+      >
         <Video
           videoRef={videoRef}
           video={video}
@@ -64,16 +73,14 @@ function AnalysisComplete({
         ) : null}
       </div>
       <div
-        className="flex flex-1 h-full flex-col justify-start items-center pl-12 py-6 overflow-y-scroll no-scroll"
+        className="flex flex-1 h-full flex-col justify-start items-center w-full max-w-full lg:w-auto pl-12 py-6 pt-0! lg:py-6 lg:overflow-y-scroll no-scroll"
         style={{
           msOverflowStyle: "none",
           scrollbarWidth: "none",
         }}
       >
         <Subtitle className="self-start">{video.title}</Subtitle>
-        <Description className="self-start mb-8">
-          {video.description}
-        </Description>
+        <Description className="self-start">{video.description}</Description>
         <SectionHeader>
           <SectionSubtitle>Creative Performance</SectionSubtitle>
           <SectionDescription>
@@ -125,7 +132,7 @@ function AnalysisComplete({
           />
         </SectionContainer>
         <SectionContainer>
-          <Description className="font-bold!">
+          <Description className="font-bold! underline">
             {video.platformFit.reasoning}
           </Description>
         </SectionContainer>
@@ -158,9 +165,14 @@ function AnalysisComplete({
           <LevelCard title="Age range" value={video.demographics.ageRange} />
           <LevelCard title="Gender" value={video.demographics.gender} />
         </SectionContainer>
-        <SectionContainer className="justify-start">
+        <div className="self-start mb-2">
+          <Description className="font-semibold">
+            Demographic Interests
+          </Description>
+        </div>
+        <SectionContainer className="justify-start flex-wrap">
           {video.demographics.interests.map((interest, index) => (
-            <span className="px-4 py-1.5 rounded-full bg-background-mute text-primary border-1 border-b-4 border-b-primary mr-2">
+            <span className="px-4 py-1.5 mb-1.5 rounded-full bg-background-mute text-primary border border-b-4 border-b-primary mr-2 text-sm lg:text-base">
               {interest}
             </span>
           ))}
@@ -252,7 +264,7 @@ function SectionContainer({
     <div
       className={clsx(
         "w-full flex justify-between items-start mb-6",
-        className
+        className,
       )}
     >
       {children}

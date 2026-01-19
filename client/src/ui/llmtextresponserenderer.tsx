@@ -45,7 +45,7 @@ function LLMTextResponseRenderer({
       }}
     >
       <div
-        className="prose prose-invert max-w-none text-lg
+        className="prose prose-invert max-w-none text-sm lg:text-base
                     prose-p:my-6
                     prose-h1:mt-10 prose-h1:mb-4 pb-20" // Added padding at bottom
       >
@@ -58,13 +58,13 @@ function LLMTextResponseRenderer({
         <div
           className={clsx(
             "w-3 h-3 aspect-square rounded-full bg-primary-dark/50 mt-6",
-            text.length === 0 && "animate-bounce"
+            text.length === 0 && "animate-bounce",
           )}
         >
           <div
             className={clsx(
               "w-full h-full aspect-square rounded-full bg-primary",
-              text.length === 0 && "animate-pulse"
+              text.length === 0 && "animate-pulse",
             )}
           />
         </div>
