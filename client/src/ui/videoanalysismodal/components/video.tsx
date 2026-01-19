@@ -23,7 +23,7 @@ function Video({
   setKeyMomentsIndex: Dispatch<SetStateAction<number>>;
 }) {
   const [muted, setMuted] = useState<boolean>(false);
-  const [hideKeyMoments, setHideKeyMoments] = useState<boolean>(false);
+  const [hideKeyMoments, setHideKeyMoments] = useState<boolean>(true);
   const [percentage, setPercentage] = useState<number>(0);
   const [duration, setDuration] = useState<number>(-1);
   const progressBarRef = useRef<HTMLDivElement>(null);

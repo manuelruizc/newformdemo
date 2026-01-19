@@ -24,9 +24,12 @@ function Sideboard() {
       </div>
 
       <SideboardButton title="Ads" path="/dashboard/video-analysis" />
-      <SideboardButton title="Compare Videos" path="/dashboard/compare-ads" />
-      <SideboardButton title="Willbot Tour" path="/dashboard/willbot-tour" />
-      <SideboardButton title="Upload" path="/dashboard/upload-ad" />
+      <SideboardButton title="Analytics" path="/dashboard/compare-ads" />
+      <SideboardButton
+        title="Willbot Settings"
+        path="/dashboard/willbot-tour"
+      />
+      <SideboardButton title="Profile" path="/dashboard/upload-ad" />
     </div>
   );
 }

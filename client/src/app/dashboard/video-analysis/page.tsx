@@ -1,9 +1,5 @@
 "use client";
-
-import FileDragAndDrop from "@/ui/dragandrop";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { streamVideoAnalysis } from "./utils/video_analysis";
-import LLMTextResponseRenderer from "@/ui/llmtextresponserenderer";
+import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { ChevronDown, Grid, Grid2X2, List, Search, X } from "lucide-react";
 import { trpc } from "@/utils/trpc";
@@ -190,8 +186,12 @@ function VideoAnalysis() {
         <EmptyStateList />
       ) : (
         <div className="w-full flex-1 flex justify-start items-start flex-wrap px-16 mt-2">
-          {allVideos.map((video) => (
-            <AdVideoItem key={video.id} video={video as VideoAdInterface} />
+          {allVideos.map((video, index) => (
+            <AdVideoItem
+              id={index === 0 ? "first-ad" : undefined}
+              key={video.id}
+              video={video as VideoAdInterface}
+            />
           ))}
           <div
             ref={ref}
@@ -260,56 +260,6 @@ function BadgeDropdown({
   );
 }
 
-function TwoOptionSwitch() {
-  const [index, setIndex] = useState<number>(0);
-  return (
-    <div className="flex w-24 h-12 justify-between items-center bg-background-mute rounded-full border border-background-soft relative">
-      <div
-        className={clsx(
-          "transition-all duration-300 ease-out flex justify-center items-center absolute top-0 left-0 w-1/2 z-0 h-full pointer-events-none",
-          index === 1 && "translate-x-full"
-        )}
-      >
-        <div className="w-10/12 h-10/12 bg-background-soft rounded-full aspect-square!" />
-      </div>
-      <button
-        onClick={() => {
-          setIndex(0);
-        }}
-        className="w-1/2 h-full flex justify-center items-center z-10 cursor-pointer"
-      >
-        <Grid2X2
-          className={clsx(
-            "transition-all duration-200 ease-in-out",
-            index === 0 ? "text-text" : "text-text-muted"
-          )}
-          size={20}
-        />
-      </button>
-      <button
-        onClick={() => {
-          setIndex(1);
-        }}
-        className="w-1/2 h-full flex justify-center items-center z-10 cursor-pointer"
-      >
-        <List
-          className={clsx(
-            "transition-all duration-200 ease-in-out",
-            index === 1 ? "text-text" : "text-text-muted"
-          )}
-          size={20}
-        />
-      </button>
-    </div>
-  );
-}
-
-const BADGES = [
-  {
-    title: "All",
-  },
-];
-
 function TopBar({
   filterBy,
   sortBy,
@@ -329,12 +279,14 @@ function TopBar({
     <div className="w-full h-24 flex justify-between items-center px-16 relative">
       <div className="flex justify-center items-center">
         <DropdownSelect
+          id="sort-button"
           options={SORT_OPTIONS}
           onClick={(type: any) => {
             handleSortChange(type);
           }}
         />
         <DropdownSelect
+          id="filter-button"
           options={FILTER_OPTIONS}
           onClick={(type: any) => {
             handleFilterChange(type);
@@ -348,9 +300,11 @@ function TopBar({
 }
 
 function DropdownSelect({
+  id,
   options,
   onClick,
 }: {
+  id?: string;
   options: { value: string; title: string }[];
   onClick: (type: string) => void;
 }) {
@@ -379,6 +333,7 @@ function DropdownSelect({
 
   return (
     <div
+      id={id}
       ref={dropdownRef}
       className={clsx("relative", !active && "text-text-muted")}
     >
@@ -444,6 +399,7 @@ function SearchInput({
       )}
     >
       <div
+        id="search-button"
         className={clsx(
           "w-24 h-10 bg-background-soft rounded-full aspect-square! relative duration-300 transition-all ease-in-out flex justify-start items-center",
           active && "w-full! mr-0! border-2 border-primary/70"

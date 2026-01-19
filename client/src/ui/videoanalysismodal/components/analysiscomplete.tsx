@@ -56,11 +56,10 @@ function AnalysisComplete({
             <Button variant="secondary" className="w-auto">
               Close
             </Button>
-            (
+
             <Button onClick={reset} className="w-auto">
               Analyze Another
             </Button>
-            )
           </div>
         ) : null}
       </div>

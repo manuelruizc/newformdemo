@@ -4,6 +4,7 @@ import "./globals.css";
 import { TRPCProvider } from "@newformdemo/client/providers/trcpprovider";
 import Dashboard from "./components/dashboard";
 import { AppFlowContextProvider } from "@/providers/appflow";
+import { WillBotTourProvider } from "@/providers/willbottour";
 
 const fontSans = Roboto({
   variable: "--font-newform-sans",
@@ -32,7 +33,9 @@ export default function RootLayout({
       >
         <TRPCProvider>
           <AppFlowContextProvider>
-            <Dashboard>{children}</Dashboard>
+            <WillBotTourProvider>
+              <Dashboard>{children}</Dashboard>
+            </WillBotTourProvider>
           </AppFlowContextProvider>
         </TRPCProvider>
       </body>

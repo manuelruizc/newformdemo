@@ -18,11 +18,13 @@ const VARIANTS: Record<ButtonVariant, string> = {
 };
 
 function Button({
+  id,
   children,
   className,
   variant = "primary",
   onClick,
 }: {
+  id?: string;
   children: React.ReactNode;
   className?: string;
   variant?: ButtonVariant;
@@ -30,6 +32,7 @@ function Button({
 }) {
   return (
     <button
+      id={id}
       onClick={onClick}
       className={clsx(
         "px-6 py-2 rounded-xl outline-solid flex justify-center items-center cursor-pointer select-none transition-colors",
