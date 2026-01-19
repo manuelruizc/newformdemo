@@ -15,7 +15,10 @@ export function SideboardButton({
   const isActive = pathname === path;
 
   return (
-    <div className="w-full flex justify-center items-center">
+    <div
+      id={title.toLowerCase() === "ads" ? "ads-sideboard-button" : undefined}
+      className="w-full flex justify-center items-center"
+    >
       <button
         onClick={() => {
           router.push(path);

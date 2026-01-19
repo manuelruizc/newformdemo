@@ -98,11 +98,21 @@ export interface VideoAdInterface {
   };
 }
 
-function Container({ children }: { children: React.ReactNode }) {
-  return <div className="w-1/4">{children}</div>;
+function Container({
+  id,
+  children,
+}: {
+  children: React.ReactNode;
+  id?: string;
+}) {
+  return (
+    <div id={id} className="w-1/4">
+      {children}
+    </div>
+  );
 }
 
-function AdVideoItem({ video }: { video: VideoAdInterface }) {
+function AdVideoItem({ video, id }: { id?: string; video: VideoAdInterface }) {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const firstRender = useRef<boolean>(false);
@@ -129,7 +139,7 @@ function AdVideoItem({ video }: { video: VideoAdInterface }) {
   };
 
   return (
-    <Container>
+    <Container id={id}>
       <div
         className={clsx(
           "w-[93%] aspect-9/16 flex flex-col justify-start items-center relative cursor-pointer"
@@ -337,7 +347,8 @@ function VideoBottom({
     },
   });
 
-  const handleDelete = () => {
+  const handleDelete = (e: any) => {
+    e.stopPropagation();
     deleteVideo.mutate({ id });
   };
 
@@ -397,7 +408,7 @@ function VideoBottom({
             >
               Close
             </Button>
-            <Button variant="danger" onClick={handleDelete}>
+            <Button variant="danger" onClick={handleDelete as () => void}>
               Delete
             </Button>
           </div>
