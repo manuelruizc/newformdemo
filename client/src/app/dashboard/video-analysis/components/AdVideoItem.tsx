@@ -106,7 +106,7 @@ function Container({
   id?: string;
 }) {
   return (
-    <div id={id} className="w-1/4">
+    <div id={id} className="w-full md:w-1/2 lg:w-1/2 xl:w-1/3  2xl:w-1/4">
       {children}
     </div>
   );
@@ -142,7 +142,7 @@ function AdVideoItem({ video, id }: { id?: string; video: VideoAdInterface }) {
     <Container id={id}>
       <div
         className={clsx(
-          "w-[93%] aspect-9/16 flex flex-col justify-start items-center relative cursor-pointer"
+          "w-[93%] aspect-9/16 flex flex-col justify-start items-center relative cursor-pointer",
         )}
         onClick={handleOpenModal}
       >
@@ -224,7 +224,7 @@ function AdVideoItem({ video, id }: { id?: string; video: VideoAdInterface }) {
         <div
           className={clsx(
             "w-full px-2 pt-2 flex flex-col relative group-hover:opacity-0 duration-300",
-            keyMomentsIndex !== -1 && "opacity-0"
+            keyMomentsIndex !== -1 && "opacity-0",
           )}
         >
           <span className="text-text font-bold line-clamp-2">
@@ -366,7 +366,7 @@ function VideoBottom({
         <button
           className={clsx(
             "text-background-mute cursor-pointer mb-2",
-            muted ? "translate-x-0" : "translate-x-1"
+            muted ? "translate-x-0" : "translate-x-1",
           )}
           onClick={(e) => {
             e.stopPropagation();
@@ -436,7 +436,7 @@ function VideoTopBar({
         </div>
       );
     },
-    []
+    [],
   );
   return (
     <div className="absolute top-0 left-0 w-full flex justify-center items-center pt-3.5">

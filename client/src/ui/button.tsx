@@ -35,12 +35,12 @@ function Button({
       id={id}
       onClick={onClick}
       className={clsx(
-        "px-6 py-2 rounded-xl outline-solid flex justify-center items-center cursor-pointer select-none transition-colors",
+        "px-4 md:px-5 lg:px-6 py-2 rounded-xl outline-solid flex justify-center items-center cursor-pointer select-none transition-colors",
         VARIANTS[variant],
-        className
+        className,
       )}
     >
-      <span>{children}</span>
+      <span className="text-sm lg:text-base">{children}</span>
     </button>
   );
 }
