@@ -105,7 +105,7 @@ function FileDragAndDrop({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`border-3 border-dashed rounded-xl text-center transition-all cursor-pointer w-9/12 h-full flex flex-col justify-center items-center ${
+          className={`border-3 border-dashed rounded-xl text-center transition-all cursor-pointer w-11/12 lg:w-9/12 h-full flex flex-col justify-center items-center ${
             isDragging
               ? "border-blue-500 bg-blue-50 scale-105"
               : "border-gray-300 bg-white hover:border-blue-400 hover:bg-gray-50"

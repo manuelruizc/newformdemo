@@ -25,13 +25,13 @@ export function SideboardButton({
         }}
         className={clsx(
           "w-9/12 py-2.5 rounded-xl cursor-pointer hover:bg-sidebar-active transition-all duration-300 ease-out flex justify-start items-center px-3",
-          isActive && "bg-sidebar-active"
+          isActive && "bg-sidebar-active",
         )}
       >
         <span
           className={clsx(
             "font-semibold",
-            isActive ? "text-sidebar-text-active" : "text-sidebar-text"
+            isActive ? "text-sidebar-text-active" : "text-sidebar-text",
           )}
         >
           {title}

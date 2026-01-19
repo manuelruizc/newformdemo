@@ -29,7 +29,7 @@ function Video({
   const progressBarRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="h-11/12 aspect-9/16 rounded-3xl relative group">
+    <div className="h-11/12 aspect-9/16 rounded-3xl relative group mt-2">
       <div className="rounded-3xl w-full h-full bg-primary-dark -translate-x-3.5 -translate-y-3.5" />
       <video
         ref={videoRef}
@@ -77,7 +77,7 @@ function Video({
           <button
             className={clsx(
               "text-background-mute cursor-pointer",
-              muted ? "translate-x-0" : "translate-x-0"
+              muted ? "translate-x-0" : "translate-x-0",
             )}
             onClick={(e) => {
               e.stopPropagation();
@@ -91,7 +91,7 @@ function Video({
           <button
             className={clsx(
               "text-background-mute cursor-pointer",
-              muted ? "translate-x-0" : "translate-x-0"
+              muted ? "translate-x-0" : "translate-x-0",
             )}
             onClick={(e) => {
               e.stopPropagation();
@@ -101,7 +101,7 @@ function Video({
             {hideKeyMoments ? <EyeClosed /> : <Eye />}
           </button>
         </div>
-        <div className="w-full py-6 flex justify-center items-center">
+        <div className="w-full py-6 mb-20 flex justify-center items-center">
           <div
             ref={progressBarRef}
             onClick={(e) => {
@@ -162,19 +162,19 @@ function KeyMomentsSidebar({
   return (
     <div
       className={clsx(
-        "absolute top-0 right-0 translate-x-full w-9 h-full flex justify-start items-center py-4 pointer-events-none z-0!",
-        hide && "hidden"
+        "flex absolute left-0 bottom-0 lg:top-0! lg:right-0! lg:translate-x-full w-full h-full justify-start items-center py-4 pointer-events-none lg:z-0! z-9999!",
+        hide && "flex lg:hidden",
       )}
     >
-      <div className="w-full h-full flex flex-col justify-between">
+      <div className="w-full h-full flex flex-col lg:justify-between justify-end">
         {keyMoments.map((moment, index) => {
           return (
-            <div className="w-125 h-auto pointer-events-none flex justify-start items-center">
+            <div className="w-full lg:w-125 pointer-events-none flex justify-start items-center h-full">
               <button
                 key={index}
                 className={clsx(
-                  "w-5 h-full bg-primary/70 -translate-x-2 hover:bg-primary hover:scale-105 hover:rounded-r-xl duration-200 ease-in-out transition-all rounded-r-lg cursor-pointer pointer-events-auto",
-                  index === keyMomentsIndex && "bg-primary!"
+                  "hidden lg:flex w-5 h-full bg-primary/70 -translate-x-2 hover:bg-primary hover:scale-105 hover:rounded-r-xl duration-200 ease-in-out transition-all rounded-r-lg cursor-pointer pointer-events-auto",
+                  index === keyMomentsIndex && "bg-primary!",
                 )}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -184,13 +184,13 @@ function KeyMomentsSidebar({
                 }}
               ></button>
               <NewFormCard
-                className={`duration-500 transition-all ease-in-out p-4 w-full text-base font-semibold text-text flex justify-center items-center mb-0 cursor-pointer max-w-7/12 ${
+                className={`absolute lg:relative bottom-0 left-0 duration-500 transition-all ease-in-out p-4 w-full text-base font-semibold text-text flex justify-center items-center mb-0 cursor-pointer lg:max-w-7/12 ${
                   index === keyMomentsIndex
                     ? "opacity-100 translate-x-0"
                     : "opacity-0 -translate-x-full"
                 }`}
               >
-                <span>{moment.reason}</span>
+                <span className="text-xs md:text-base">{moment.reason}</span>
               </NewFormCard>
             </div>
           );

@@ -33,7 +33,10 @@ function Topbar() {
         {TITLES[pathname as PathsTypes] || "Dashboard"}
       </span>
       <div className="flex justify-center items-center">
-        <button onClick={() => startTour(TOUR_DATA)} className="mr-2 lg:mr-6">
+        <button
+          onClick={() => startTour(TOUR_DATA)}
+          className="hidden lg:flex mr-2 lg:mr-6"
+        >
           <HelpCircle className="text-text-muted hover:text-text cursor-pointer" />
         </button>
         {isAnalysisScreen ? (
