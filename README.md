@@ -54,11 +54,6 @@ The core value of the demo is the structured data extraction. Below is the JSON 
       "youtubeShorts": 6
     }
   },
-  "technicalQuality": {
-    "mobileOptimized": true,
-    "audioClarity": 9,
-    "productionIssues": [] // Empty array indicates clean production
-  },
   "metadata": {
     "title": "Day in the Life - Remote Dev",
     "description": "A 15s short showcasing the workspace setup."
@@ -74,10 +69,6 @@ Using **Prisma** with **PostgreSQL**, the JSON data above is mapped to relationa
 - _"Cursor-based pagination"_
 - _"Filter by oldest, newest, strongest hook and weakest hook"_
 - _"Sort by Hook strength (high, medium, low, all)"_
-
-## Project Goal
-
-This demo serves as a Proof of Concept for automating high-volume creative analysis, moving from subjective human review to objective, data-driven indexing.
 
 ### **Execution Requirements**
 
