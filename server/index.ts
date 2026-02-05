@@ -18,7 +18,7 @@ app.use(
   cors({
     origin: "http://localhost:3000",
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 app.use("/api/upload", uploadRouter);
@@ -29,11 +29,6 @@ const ai = new GoogleGenAI({
 });
 
 app.get("/", async (req, res) => {
-  // await prisma.video.delete({
-  //   where: {
-  //     id: 218,
-  //   },
-  // });
   const ans = await prisma.video.findMany({
     include: {
       hook: true,
@@ -56,7 +51,7 @@ app.get("/", async (req, res) => {
 
 app.use(
   "/uploads/videos",
-  express.static(path.join(__dirname, "uploads/videos"))
+  express.static(path.join(__dirname, "uploads/videos")),
 );
 
 app.use(
@@ -66,7 +61,7 @@ app.use(
     createContext: () => ({
       prisma,
     }),
-  })
+  }),
 );
 const PORT = process.env.PORT || 4000;
 

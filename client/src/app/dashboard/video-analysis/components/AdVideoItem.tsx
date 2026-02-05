@@ -261,11 +261,18 @@ function AdVideoItem({
             />
             <div className="absolute top-0 left-0 w-full h-full bg-black/20 rounded-3xl" />
           </div>
-          {isVideoSelected ? (
-            <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center pointer-events-none">
-              <Description className="text-xl! rounded-lg text-white bg-primary px-3 py-0.5">
-                SELECTED
-              </Description>
+
+          {multiSelectionEnabled ? (
+            <div className="z-999999 absolute bottom-10 left-[4%] w-full h-auto flex justify-start items-center pointer-events-none">
+              <Circle
+                size={24}
+                className={clsx(
+                  "text-white",
+                  isVideoSelected
+                    ? "fill-primary opacity-100"
+                    : "fill-transparent opacity-50",
+                )}
+              />
             </div>
           ) : null}
         </div>
