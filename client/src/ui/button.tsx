@@ -2,6 +2,13 @@ import React from "react";
 import clsx from "clsx";
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+type ButtonSize = "sm" | "md" | "lg";
+
+const SIZES: Record<ButtonSize, string> = {
+  sm: "px-3 py-1.5 text-xs rounded-lg",
+  md: "px-4 md:px-5 py-2 text-sm rounded-xl",
+  lg: "px-6 py-3 text-base rounded-2xl",
+};
 
 const VARIANTS: Record<ButtonVariant, string> = {
   primary:
@@ -17,30 +24,30 @@ const VARIANTS: Record<ButtonVariant, string> = {
     "bg-error hover:bg-error/80 active:bg-error text-white outline-error/0 active:outline-error/30",
 };
 
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+};
+
 function Button({
-  id,
   children,
   className,
   variant = "primary",
-  onClick,
-}: {
-  id?: string;
-  children: React.ReactNode;
-  className?: string;
-  variant?: ButtonVariant;
-  onClick?: () => void;
-}) {
+  size = "sm",
+  ...props
+}: ButtonProps) {
   return (
     <button
-      id={id}
-      onClick={onClick}
+      {...props}
       className={clsx(
-        "px-4 md:px-5 lg:px-6 py-2 rounded-xl outline-solid flex justify-center items-center cursor-pointer select-none transition-colors",
+        "outline-solid flex justify-center items-center cursor-pointer select-none transition-colors",
         VARIANTS[variant],
+        SIZES[size],
+        props.disabled && "opacity-50",
         className,
       )}
     >
-      <span className="text-sm lg:text-base">{children}</span>
+      {children}
     </button>
   );
 }

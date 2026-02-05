@@ -12,6 +12,9 @@ import useKeyboardShortcuts from "./utils/shortcuts";
 import TopBar from "./components/topbar";
 
 function VideoAnalysis() {
+  const [multiSelectionEnabled, setMultiSelectionEnabled] =
+    useState<boolean>(false);
+  const [adsSelected, setAdsSelected] = useState<Record<number, string>>({});
   const { adCreated, addToast } = useAppFlow();
   const { ref, inView } = useInView({
     threshold: 0.1,
@@ -144,6 +147,10 @@ function VideoAnalysis() {
         sortBy={sortBy}
         handleSortChange={handleSortChange}
         handleSearchChange={handleSearchChange}
+        multiSelectionEnabled={multiSelectionEnabled}
+        adsSelected={adsSelected}
+        setMultiSelectionEnabled={setMultiSelectionEnabled}
+        setAdsSelected={setAdsSelected}
       />
       {allVideos.length === 0 ? (
         <EmptyStateList />
@@ -154,6 +161,10 @@ function VideoAnalysis() {
               id={index === 0 ? "first-ad" : undefined}
               key={video.id}
               video={video as VideoAdInterface}
+              adsSelected={adsSelected}
+              multiSelectionEnabled={multiSelectionEnabled}
+              setMultiSelectionEnabled={setMultiSelectionEnabled}
+              setAdsSelected={setAdsSelected}
             />
           ))}
           <div

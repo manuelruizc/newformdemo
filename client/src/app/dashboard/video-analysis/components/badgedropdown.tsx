@@ -4,10 +4,12 @@ import { ChevronDown } from "lucide-react";
 function BadgeDropdown({
   title,
   active,
+  useChevron = true,
   onClick,
 }: {
   title: string;
   active?: boolean;
+  useChevron?: boolean;
   onClick?: () => void;
 }) {
   return (
@@ -19,7 +21,7 @@ function BadgeDropdown({
       )}
     >
       <span className="text-sm">{title}</span>
-      <ChevronDown className="ml-2" size="1.3em" />
+      {useChevron && <ChevronDown className="ml-2" size="1.3em" />}
     </button>
   );
 }

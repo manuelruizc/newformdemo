@@ -23,7 +23,9 @@ import {
   Zap,
 } from "lucide-react";
 import {
+  Dispatch,
   RefObject,
+  SetStateAction,
   useCallback,
   useEffect,
   useMemo,
@@ -112,7 +114,21 @@ function Container({
   );
 }
 
-function AdVideoItem({ video, id }: { id?: string; video: VideoAdInterface }) {
+function AdVideoItem({
+  video,
+  id,
+  adsSelected,
+  multiSelectionEnabled,
+  setMultiSelectionEnabled,
+  setAdsSelected,
+}: {
+  id?: string;
+  video: VideoAdInterface;
+  adsSelected: Record<number, string>;
+  multiSelectionEnabled: boolean;
+  setMultiSelectionEnabled: Dispatch<SetStateAction<boolean>>;
+  setAdsSelected: Dispatch<SetStateAction<Record<number, string>>>;
+}) {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const firstRender = useRef<boolean>(false);
@@ -134,8 +150,31 @@ function AdVideoItem({ video, id }: { id?: string; video: VideoAdInterface }) {
     };
   }, []);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (id: number, uniqueName: string) => {
+    if (multiSelectionEnabled) {
+      onSelectVideoAd(id, uniqueName);
+      return;
+    }
     setOpenModal(true);
+  };
+
+  const isVideoSelected = useMemo(() => {
+    return adsSelected.hasOwnProperty(video.id);
+  }, [video, adsSelected]);
+
+  const onSelectVideoAd = (id: number, uniqueName: string) => {
+    const exists = adsSelected.hasOwnProperty(id);
+    setAdsSelected((prev) => {
+      const obj: Record<number, string> = { ...prev };
+      if (exists) {
+        delete obj[id];
+      } else {
+        obj[id] = uniqueName;
+      }
+      return {
+        ...obj,
+      };
+    });
   };
 
   return (
@@ -144,13 +183,15 @@ function AdVideoItem({ video, id }: { id?: string; video: VideoAdInterface }) {
         className={clsx(
           "w-[93%] aspect-9/16 flex flex-col justify-start items-center relative cursor-pointer",
         )}
-        onClick={handleOpenModal}
+        onClick={() => handleOpenModal(video.id, video.uniqueName)}
       >
         {animateRecentlyAdded ? (
           <div className="absolute top-0 left-0 scale-y-[1.06] scale-x-[1.09]! w-full h-full z-0 rounded-3xl bg-primary/50 animate-pulse" />
         ) : null}
         <div
-          className="w-full h-full rounded-3xl mx-2 mt-8 bg-amber-200 relative group"
+          className={clsx(
+            "w-full h-full rounded-3xl mx-2 mt-8 bg-amber-200 relative group",
+          )}
           onMouseEnter={() => {
             if (!firstRender.current && videoRef.current) {
               videoRef.current.muted = true;
@@ -220,6 +261,13 @@ function AdVideoItem({ video, id }: { id?: string; video: VideoAdInterface }) {
             />
             <div className="absolute top-0 left-0 w-full h-full bg-black/20 rounded-3xl" />
           </div>
+          {isVideoSelected ? (
+            <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center pointer-events-none">
+              <Description className="text-xl! rounded-lg text-white bg-primary px-3 py-0.5">
+                SELECTED
+              </Description>
+            </div>
+          ) : null}
         </div>
         <div
           className={clsx(
