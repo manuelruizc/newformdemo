@@ -23,7 +23,7 @@ export async function analyzeVideo(videoId: number) {
     const videoPath = path.join(
       __dirname,
       "../../uploads/videos",
-      video.uniqueName
+      video.uniqueName,
     );
 
     if (!fs.existsSync(videoPath)) {
@@ -264,7 +264,9 @@ ANALYSIS INSTRUCTIONS:
   "metadata": {
     "title": <Unique easy identifiable title>,
     "description": <Description/summary of the video ad>
-  }
+  },
+  "strongestHookRecommendation": <Description of the strongest initial hook moment for retention and engament, is a new suggestion that may or may not be in the original video, but should be the strongest hook moment to maximize retention and engagement based on the content of the video, the hook is guaranteed a 9-10 score>,
+  "strongestCTARecommendation": <Description of the strongest call-to-action moment for conversion, is a new suggestion that may or may not be in the original video, but should be the most clear and compelling CTA moment to maximize conversions based on the content of the video, the CTA is guaranteed a 9-10 clarity score>
 }
 `;
     return ai.models.generateContentStream({
@@ -297,7 +299,7 @@ ANALYSIS INSTRUCTIONS:
     throw new Error(
       `Failed to analyze video: ${
         error instanceof Error ? error.message : "Unknown error"
-      }`
+      }`,
     );
   }
 }

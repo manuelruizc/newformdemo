@@ -14,7 +14,7 @@ export const videoRouter = router({
       z.object({
         videoId: z.number(),
         analysis: z.any(),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       try {
@@ -151,7 +151,7 @@ export const videoRouter = router({
     .input(
       z.object({
         id: z.number(),
-      })
+      }),
     )
     .mutation(async ({ input }) => {
       const videoData = await prisma.video.findFirst({
@@ -167,7 +167,7 @@ export const videoRouter = router({
       const videoPath = path.join(
         __dirname,
         "../../server/uploads/videos",
-        videoData.uri
+        videoData.uri,
       );
 
       if (fs.existsSync(videoPath)) {
@@ -191,7 +191,7 @@ export const videoRouter = router({
         sortBy: SortByEnum,
         limit: z.number().min(1).max(100).default(12),
         cursor: z.number().optional(), // ✅ Changed from z.string() to z.number()
-      })
+      }),
     )
     .query(async ({ input, ctx }) => {
       const { searchTerm, filterBy, sortBy, limit, cursor } = input;
@@ -240,10 +240,10 @@ export const videoRouter = router({
           orderBy = { createdAt: "asc" };
           break;
         case "hook-high":
-          orderBy = { hook: { hookStrength: "desc" } };
+          orderBy = { performance: { engagementRate: "desc" } };
           break;
         case "hook-low":
-          orderBy = { hook: { hookStrength: "asc" } };
+          orderBy = { performance: { engagementRate: "asc" } };
           break;
       }
 
