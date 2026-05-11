@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Epilogue, Roboto, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { TRPCProvider } from "@newformdemo/client/providers/trcpprovider";
-import { WillBotTourProvider } from "@/willbottour";
-import WillBotTest from "@/willbottour/test";
+import Dashboard from "./components/dashboard";
+import { AppFlowContextProvider } from "@/providers/appflow";
+import { WillBotTourProvider } from "@/providers/willbottour";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const fontSans = Roboto({
+  variable: "--font-newform-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const geistMono = Epilogue({
+  variable: "--font-newform-grotesk",
   subsets: ["latin"],
 });
 
@@ -28,14 +29,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistMono.className} ${fontSans.className} font-newform! antialiased`}
       >
-        <WillBotTourProvider>
-          <TRPCProvider>
-            <WillBotTest />
-            {/* {children} */}
-          </TRPCProvider>
-        </WillBotTourProvider>
+        <TRPCProvider>
+          <AppFlowContextProvider>
+            <WillBotTourProvider>
+              <Dashboard>{children}</Dashboard>
+            </WillBotTourProvider>
+          </AppFlowContextProvider>
+        </TRPCProvider>
       </body>
     </html>
   );

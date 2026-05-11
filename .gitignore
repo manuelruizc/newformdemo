@@ -30,3 +30,7 @@ Thumbs.db
 .env
 .env.local
 .env.production
+
+# video-upload
+server/uploads/videos/*
+!server/uploads/videos/.gitkeep
