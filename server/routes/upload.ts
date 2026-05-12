@@ -37,7 +37,7 @@ const upload = multer({
   storage: multer.memoryStorage(),
   fileFilter,
   limits: {
-    fileSize: 100 * 1024 * 1024,
+    fileSize: 60 * 1024 * 1024,
   },
 });
 
@@ -99,7 +99,7 @@ router.use(
       if (error.code === "LIMIT_FILE_SIZE") {
         return res.status(400).json({
           success: false,
-          error: "File is too large. Maximum size is 100MB",
+          error: "Video is too large. Maximum size is 60 MB.",
         });
       }
     }
