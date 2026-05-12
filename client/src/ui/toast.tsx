@@ -17,15 +17,15 @@ export const Toast: React.FC<ToastProps> = ({
   children,
   duration = 4000,
 }) => {
-  const types: Record<ToastType, string> = {
-    info: "bg-background-soft border-primary/70 border-b-primary",
-    success: "bg-background-soft border-success/70 border-b-success",
-    warning: "bg-background-soft border-warning/70 border-b-warning ",
-    error: "bg-background-soft border-error/70 border-b-error",
+  const accent: Record<ToastType, string> = {
+    info: "bg-primary",
+    success: "bg-success",
+    warning: "bg-warning",
+    error: "bg-error",
   };
 
   const text: Record<ToastType, string> = {
-    info: "text-text",
+    info: "text-primary",
     success: "text-success",
     warning: "text-warning",
     error: "text-error",
@@ -38,16 +38,18 @@ export const Toast: React.FC<ToastProps> = ({
   }, [onClose]);
 
   return (
-    <div
-      className={`${types[type]} border-2 border-b-8 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-lg min-w-[300px] backdrop-blur-sm z-[99999999999999999]`}
-    >
+    <div className="relative bg-background-soft border border-border rounded-lg pl-4 pr-3 py-3 flex items-center justify-between gap-3 shadow-md min-w-75 z-[99999999999999999] overflow-hidden">
+      <span
+        className={`absolute left-0 top-0 bottom-0 w-1 ${accent[type]}`}
+        aria-hidden
+      />
       <span className="text-text text-sm">{message}</span>
       {onClose ? (
         <button
           onClick={onClose}
           className={`transition-colors hover:cursor-pointer ${text[type]}`}
         >
-          <X />
+          <X size={16} />
         </button>
       ) : null}
     </div>

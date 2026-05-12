@@ -137,7 +137,7 @@ function VideoAnalysis() {
   }, [adCreated]);
 
   return (
-    <div className="w-full h-full flex flex-col justify-start items-start flex-1 pb-32">
+    <div className="w-full min-h-screen bg-background-mute flex flex-col justify-start items-start flex-1 pb-32">
       <TopBar
         handleFilterChange={handleFilterChange}
         filterBy={filterBy}
@@ -148,7 +148,7 @@ function VideoAnalysis() {
       {allVideos.length === 0 ? (
         <EmptyStateList />
       ) : (
-        <div className="w-full flex-1 flex justify-start items-start flex-wrap px-16 mt-2">
+        <div className="w-full flex-1 grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] px-8 lg:px-12 mt-6 gap-6 justify-items-start">
           {allVideos.map((video, index) => (
             <AdVideoItem
               id={index === 0 ? "first-ad" : undefined}
@@ -158,16 +158,16 @@ function VideoAnalysis() {
           ))}
           <div
             ref={ref}
-            className="w-full h-20 flex justify-center items-center"
+            className="col-span-full w-full h-20 flex justify-center items-center"
           >
             {isFetchingNextPage ? (
-              <span className="text-gray-500 animate-pulse">
-                Loading more videos...
+              <span className="font-newform-mono! text-[11px] uppercase tracking-[0.18em] text-text-secondary animate-pulse">
+                Loading more videos
               </span>
             ) : hasNextPage ? (
               <span className="text-transparent">Load More</span>
             ) : (
-              <span className="text-gray-400 text-sm">
+              <span className="font-newform-mono! text-[11px] uppercase tracking-[0.18em] text-text-muted">
                 No more videos to show
               </span>
             )}

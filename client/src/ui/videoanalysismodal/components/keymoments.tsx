@@ -47,13 +47,14 @@ function KeyMoment({
   return (
     <NewFormCard
       onClick={onClick}
-      className={`duration-500 transition-all ease-in-out p-4 w-[100%] text-base font-semibold text-text flex justify-start items-center cursor-pointer mb-4 ${
-        active ? "scale-100" : "opacity-60"
-      } hover:opacity-85 active:scale-95`}
+      className={`duration-200 transition-colors ease-out p-4 w-full text-sm text-text flex justify-start items-center cursor-pointer mb-3 gap-3 hover:bg-background-mute ${
+        active ? "ring-2 ring-primary/30 border-primary/40" : ""
+      }`}
     >
-      <span>
-        {reason} [{formatSecondsToMMSS(time)}]
+      <span className="font-newform-mono! text-[10px] tracking-[0.18em] text-text-secondary shrink-0">
+        {formatSecondsToMMSS(time)}
       </span>
+      <span className="text-text leading-snug">{reason}</span>
     </NewFormCard>
   );
 }

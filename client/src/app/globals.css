@@ -3,10 +3,6 @@
 nextjs-portal {
   display: none !important;
 }
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
 * {
   box-sizing: border-box;
@@ -14,50 +10,108 @@ nextjs-portal {
 
 body {
   font-family: var(--font-newform-sans);
+  background: var(--color-background);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+:root {
+  /* NFDS brand */
+  --nf-brand: #901cf4;
+  --nf-brand-hover: #7617c8;
+  --nf-brand-pressed: #6c00c5;
+  --nf-magenta: #fd60ff;
+  --nf-violet-soft: #b5a8ff;
+
+  /* NFDS neutrals */
+  --nf-gray-50: #f6f6f6;
+  --nf-gray-100: #f4f4f4;
+  --nf-gray-200: #e6e6e6;
+  --nf-gray-300: #d9d9d9;
+  --nf-gray-400: #b3b3b3;
+  --nf-gray-500: #979797;
+  --nf-gray-600: #6d7172;
+  --nf-gray-700: #53555b;
+  --nf-gray-800: #2a2a2e;
+  --nf-ink: #0e0e10;
+
+  /* NFDS borders / shadows */
+  --nf-border: hsl(214 32% 91%);
+  --nf-shadow-xs: 0 1px 2px rgba(14, 14, 16, 0.04);
+  --nf-shadow-sm: 0 1px 3px rgba(14, 14, 16, 0.06),
+    0 1px 2px rgba(14, 14, 16, 0.04);
+  --nf-shadow-md: 0 4px 8px rgba(14, 14, 16, 0.06),
+    0 2px 4px rgba(14, 14, 16, 0.04);
+  --nf-shadow-lg: 0 10px 24px rgba(14, 14, 16, 0.08),
+    0 4px 8px rgba(14, 14, 16, 0.04);
+  --nf-shadow-purple: 0 16px 40px rgba(143, 0, 255, 0.18);
 }
 
 @theme inline {
-  --font-newform: "Roboto", ui-sans-serif, system-ui;
-  --font-newform-grotesk: "Space Grotesk", ui-sans-serif, system-ui;
-  /* Layout & Backgrounds */
-  --color-background: #f5f7fa; /* Main light gray backdrop */
-  --color-background-soft: #ffffff; /* Pure white cards and sidebar */
-  --color-background-mute: #edf1f7; /* Subtle hover states/dividers */
+  /* Font families — wired via next/font in layout.tsx */
+  --font-newform: var(--font-newform-sans), "Geist", ui-sans-serif, system-ui;
+  --font-newform-sans: "Geist", ui-sans-serif, system-ui;
+  --font-newform-grotesk: "Fraunces", "Newsreader", Georgia, serif;
+  --font-newform-mono: "Geist Mono", ui-monospace, Menlo, monospace;
+
+  /* Layout & Backgrounds — remapped to NFDS Framework surface */
+  --color-background: #ffffff;
+  --color-background-soft: #ffffff;
+  --color-background-mute: #f6f6f6;
+  --color-background-panel: #f6f6f6;
 
   /* Text & Typography */
-  --color-text: #1a1d23; /* Deep slate/black for headings */
-  --color-text-secondary: #4a5568; /* Medium gray for descriptions */
-  --color-text-muted: #9ca3af; /* Light gray for placeholders/meta */
+  --color-text: hsl(222.2 84% 4.9%);
+  --color-text-secondary: hsl(215.4 16.3% 46.9%);
+  --color-text-muted: #979797;
 
-  /* Primary Action (The Felix Blue) */
-  --color-primary: #6735da; /* The "middle point" – balanced and professional */
-  --color-primary-hover: #5329b9; /* Deepened version for interaction */
-  --color-primary-glow: #f3f0ff; /* Soft violet-tinted background */
-  --color-primary-dark: #431fa0; /* Stronger, dark-mode friendly anchor */
+  /* Brand (was Felix Blue) — now NewForm Purple */
+  --color-primary: #901cf4;
+  --color-primary-hover: #7617c8;
+  --color-primary-glow: #f5ecff;
+  --color-primary-dark: #6c00c5;
 
-  /* Accent / Beta Tags */
-  --color-accent: #f87171; /* The soft red/coral used for 'Beta' tags */
-  --color-accent-hover: #ef4444;
+  /* Accent */
+  --color-accent: #fd60ff;
+  --color-accent-hover: #d343d6;
 
-  /* Semantic Colors (Matching the icon grid) */
-  --color-success: #10b981; /* Green icon (Content Improver) */
-  --color-warning: #f59e0b; /* Orange/Gold icon (Amazon/Facebook) */
-  --color-error: #c25e5e; /* Red icon (BAB Framework) */
+  /* Semantic */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #c25e5e;
 
-  /* Sidebar Specific */
-  --color-sidebar-active: #e8ebf2; /* The light gray background for the active menu item */
-  --color-sidebar-text: #64748b; /* Neutral gray for inactive icons/text */
-  --color-sidebar-text-active: #1a1d23;
+  /* Sidebar (kept for any orphaned references; harmless) */
+  --color-sidebar-active: #f0f0f0;
+  --color-sidebar-text: #6d7172;
+  --color-sidebar-text-active: hsl(222.2 84% 4.9%);
+
+  /* Borders & shadows mapped to NFDS */
+  --color-border: hsl(214 32% 91%);
 }
 
-@theme inline {
-  /* --color-background: var(--background);
-  --color-foreground: var(--foreground); */
+/* Utility classes available app-wide */
+.nf-kicker {
+  font-family: var(--font-newform-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.nf-card {
+  background: var(--color-background-soft);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: var(--nf-shadow-xs);
+}
+
+.nf-section-panel {
+  background: var(--color-background-panel);
+  border-radius: 24px;
+  padding: 32px;
+}
+
+.nf-brand-grad {
+  background: linear-gradient(90deg, #901cf4 0%, #ff00ff 100%);
 }

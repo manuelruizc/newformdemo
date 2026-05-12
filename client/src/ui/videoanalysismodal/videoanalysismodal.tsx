@@ -217,9 +217,14 @@ function VideoAnalysisModal() {
   }, [processing]);
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
-      <Title>{analysisCompleted ? "Analysis Complete" : "Ad Analysis"}</Title>
+      <span className="font-newform-mono! text-[11px] uppercase tracking-[0.18em] text-text-secondary mb-2">
+        {analysisCompleted ? "Analysis" : "New ad"}
+      </span>
+      <Title>{analysisCompleted ? "Analysis complete" : "Ad analysis"}</Title>
       {!analysisCompleted ? (
-        <Subtitle>Drop your ad here for instant analysis</Subtitle>
+        <Subtitle className="text-text-secondary mt-2">
+          Drop your ad here for instant analysis
+        </Subtitle>
       ) : null}
       {!processing ? (
         <FileDragAndDrop

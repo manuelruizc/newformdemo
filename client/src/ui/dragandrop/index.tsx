@@ -105,10 +105,10 @@ function FileDragAndDrop({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`border-3 border-dashed rounded-xl text-center transition-all cursor-pointer w-11/12 lg:w-9/12 h-full flex flex-col justify-center items-center ${
+          className={`border-2 border-dashed rounded-3xl text-center transition-colors cursor-pointer w-11/12 lg:w-9/12 h-full flex flex-col justify-center items-center ${
             isDragging
-              ? "border-blue-500 bg-blue-50 scale-105"
-              : "border-gray-300 bg-white hover:border-blue-400 hover:bg-gray-50"
+              ? "border-primary bg-primary-glow"
+              : "border-border bg-background-soft hover:border-text-secondary hover:bg-background-mute"
           }`}
           onClick={() => document.getElementById("fileInput")?.click()}
         >
@@ -122,15 +122,21 @@ function FileDragAndDrop({
           />
 
           <Upload
-            className={`w-16 h-16 mx-auto mb-4 ${
-              isDragging ? "text-blue-500" : "text-gray-400"
+            strokeWidth={1.5}
+            className={`w-12 h-12 mx-auto mb-5 ${
+              isDragging ? "text-primary" : "text-text-secondary"
             }`}
           />
 
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">
-            {isDragging ? "Drop your ad" : "Drag & Drop your ad here"}
+          <span className="font-newform-mono! text-[11px] uppercase tracking-[0.18em] text-text-secondary mb-3">
+            Upload
+          </span>
+          <h3 className="text-lg font-medium tracking-tight text-text mb-2">
+            {isDragging ? "Drop your ad" : "Drag & drop your ad here"}
           </h3>
-          <p className="text-gray-500">or click to browse from your computer</p>
+          <p className="text-sm text-text-secondary">
+            or click to browse from your computer
+          </p>
         </div>
       </div>
     </div>

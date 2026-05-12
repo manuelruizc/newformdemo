@@ -45,9 +45,10 @@ function LLMTextResponseRenderer({
       }}
     >
       <div
-        className="prose prose-invert max-w-none text-sm lg:text-base
-                    prose-p:my-6
-                    prose-h1:mt-10 prose-h1:mb-4 pb-20" // Added padding at bottom
+        className="prose max-w-none text-sm lg:text-base text-text
+                    prose-p:my-6 prose-p:text-text-secondary
+                    prose-headings:text-text prose-strong:text-text
+                    prose-h1:mt-10 prose-h1:mb-4 pb-20"
       >
         <ReactMarkdown
           remarkPlugins={[remarkBreaks]}

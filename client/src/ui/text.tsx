@@ -5,7 +5,9 @@ export const Title = ({
   children: React.ReactNode;
   className?: string;
 }) => (
-  <h1 className={`text-lg lg:text-3xl font-bold text-text ${className}`}>
+  <h1
+    className={`text-2xl lg:text-3xl font-semibold tracking-tight text-text ${className}`}
+  >
     {children}
   </h1>
 );
@@ -18,7 +20,7 @@ export const Subtitle = ({
   className?: string;
 }) => (
   <h2
-    className={`text-lg lg:text-xl font-semibold text-text-secondary ${className}`}
+    className={`text-lg lg:text-xl font-medium tracking-tight text-text ${className}`}
   >
     {children}
   </h2>
@@ -32,7 +34,7 @@ export const Description = ({
   className?: string;
 }) => (
   <p
-    className={`text-sm lg:text-base font-newform-grotesk! font-medium text-text-secondary leading-relaxed ${className}`}
+    className={`text-sm lg:text-base text-text-secondary leading-relaxed ${className}`}
   >
     {children}
   </p>
@@ -45,7 +47,9 @@ export const Label = ({
   children: React.ReactNode;
   className?: string;
 }) => (
-  <label className={`text-xs lg:text-sm font-medium text-text/80 ${className}`}>
+  <label
+    className={`font-newform-mono! text-[11px] uppercase tracking-[0.18em] text-text-secondary ${className}`}
+  >
     {children}
   </label>
 );

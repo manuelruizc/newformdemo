@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import VideoAnalysis from "./dashboard/video-analysis/page";
 
 export default function Home() {
-  redirect("/dashboard/video-analysis");
+  return <VideoAnalysis />;
 }

@@ -40,24 +40,24 @@ function DropdownSelect({
       ref={dropdownRef}
       className={clsx("relative", !active && "text-text-muted")}
     >
-      <BadgeDropdown title={title} onClick={() => setActive(!active)} />
+      <BadgeDropdown title={title} active={active} onClick={() => setActive(!active)} />
       <div
         className={clsx(
-          "absolute bottom-0 left-0 translate-y-[98%] -translate-x-10 w-48 bg-background-soft border border-b-8 border-primary z-100000 rounded-2xl py-2 pointer-events-none duration-150 transition-all ease-in-out opacity-0",
-          active && "pointer-events-auto! opacity-100 translate-y-[102%]",
+          "absolute bottom-0 left-0 translate-y-full mt-1 w-48 bg-background-soft border border-border shadow-md z-100000 rounded-lg py-1 pointer-events-none duration-150 transition-all ease-out opacity-0",
+          active && "pointer-events-auto! opacity-100 translate-y-[104%]",
         )}
       >
-        {options.map((option, index) => (
+        {options.map((option) => (
           <button
             key={option.value}
-            className="w-full py-2 hover:bg-background-mute cursor-pointer rounded-lg group"
+            className="w-full px-3 py-1.5 hover:bg-background-mute cursor-pointer text-left group"
             onClick={() => {
               onClick(option.value);
               setTitle(option.title);
               setActive(false);
             }}
           >
-            <span className="group-hover:text-primary text-xs md:text-base">
+            <span className="text-sm text-text group-hover:text-text">
               {option.title}
             </span>
           </button>

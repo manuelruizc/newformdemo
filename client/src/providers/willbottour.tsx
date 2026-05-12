@@ -320,7 +320,7 @@ export const WillBotTourProvider: React.FC<ProviderProps> = ({ children }) => {
 
             <div
               ref={messageRef}
-              className="absolute pointer-events-auto bg-background-soft rounded-xl p-4 shadow-2xl transition-all duration-300 border border-white/10"
+              className="absolute pointer-events-auto bg-background-soft rounded-lg p-5 shadow-lg transition-all duration-200 border border-border"
               style={{
                 top: messagePosition.top,
                 left: messagePosition.left,
@@ -329,34 +329,32 @@ export const WillBotTourProvider: React.FC<ProviderProps> = ({ children }) => {
               }}
             >
               <div className="space-y-3">
+                <span className="font-newform-mono! text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+                  Tour · {currentStep + 1} / {steps.length}
+                </span>
                 {steps[currentStep]?.title && (
-                  <h3 className="font-bold text-lg leading-tight">
+                  <h3 className="text-base font-medium tracking-tight leading-tight text-text">
                     {steps[currentStep].title}
                   </h3>
                 )}
-                <p className="text-sm text-text-muted leading-relaxed">
+                <p className="text-sm text-text-secondary leading-relaxed">
                   {steps[currentStep]?.content}
                 </p>
-                <div className="flex items-center justify-between pt-3 border-t border-white/5">
-                  <span className="text-xs font-medium text-text-muted">
-                    {currentStep + 1} / {steps.length}
-                  </span>
-                  <div className="flex gap-2">
-                    {!value.isFirstStep && (
-                      <button
-                        onClick={prevStep}
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg bg-background-mute hover:bg-background-hard transition-colors cursor-pointer"
-                      >
-                        Back
-                      </button>
-                    )}
+                <div className="flex items-center justify-end pt-3 border-t border-border gap-2">
+                  {!value.isFirstStep && (
                     <button
-                      onClick={value.isLastStep ? closeTour : nextStep}
-                      className="px-4 py-1.5 text-xs font-bold rounded-lg bg-primary text-white hover:brightness-110 transition-all cursor-pointer"
+                      onClick={prevStep}
+                      className="px-3 h-8 text-sm rounded-lg border border-border bg-background-soft hover:bg-background-mute transition-colors cursor-pointer text-text"
                     >
-                      {value.isLastStep ? "Done" : "Next"}
+                      Back
                     </button>
-                  </div>
+                  )}
+                  <button
+                    onClick={value.isLastStep ? closeTour : nextStep}
+                    className="px-4 h-8 text-sm rounded-lg bg-primary text-white hover:bg-primary-hover transition-colors cursor-pointer"
+                  >
+                    {value.isLastStep ? "Done" : "Next"}
+                  </button>
                 </div>
               </div>
             </div>

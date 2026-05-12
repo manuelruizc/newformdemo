@@ -36,25 +36,29 @@ function SearchInput({
 
   return (
     <div
+      id="search-button"
       className={clsx(
-        "duration-300 transition-all ease-in-out absolute top-0 left-0 w-full h-full flex justify-end items-center z-10 pointer-events-none px-6 md:px-16",
+        "h-9 bg-background-soft rounded-lg relative transition-all duration-200 ease-linear flex justify-start items-center border border-border",
+        active ? "w-64 md:w-96" : "w-32 md:w-44",
+        active && "ring-2 ring-primary/20 border-primary/40",
       )}
     >
-      <div
-        id="search-button"
-        className={clsx(
-          "w-24 h-10 bg-background-soft rounded-full aspect-square! relative duration-300 transition-all ease-in-out flex justify-start items-center",
-          active && "w-full! mr-0! border-2 border-primary/70",
-        )}
-      >
+        <Search
+          strokeWidth={1.5}
+          className={clsx(
+            "absolute left-3 text-text-secondary pointer-events-none transition-opacity",
+            active ? "opacity-100" : "opacity-60",
+          )}
+          size={16}
+        />
         <input
           ref={ref}
           type="text"
           className={clsx(
-            "w-full h-full rounded-full pl-6 font-semibold pointer-events-auto! text-sm md:text-base",
-            !active && "w-0! pointer-events-none! opacity-0 h-0!",
+            "w-full h-full bg-transparent pl-9 pr-10 text-sm text-text placeholder:text-text-muted pointer-events-auto! focus:outline-none rounded-lg",
+            !active && "cursor-pointer",
           )}
-          placeholder="Search..."
+          placeholder="Search ads"
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
@@ -64,34 +68,23 @@ function SearchInput({
           }}
           onBlur={() => setActive(false)}
           onFocus={() => setActive(true)}
+          onClick={() => setActive(true)}
         />
-        <button
-          className={clsx(
-            "absolute top-0 left-0 w-full h-full flex justify-start items-center pl-3 border-2 border-text/50 rounded-full pointer-events-auto duration-300 ease-linear transition-all",
-            active && "pointer-events-none! opacity-0",
-          )}
-          onClick={() => {
-            ref.current?.focus();
-            setActive(true);
-          }}
-        >
-          <span className="font-bold text-text-secondary text-sm md:text-base">
-            ⌘ + K
+        {active ? (
+          <button
+            onClick={() => {
+              setText("");
+              setActive(false);
+            }}
+            className="absolute right-2 w-7 h-7 flex justify-center items-center rounded-md hover:bg-background-mute text-text-secondary transition-colors cursor-pointer pointer-events-auto!"
+          >
+            <X strokeWidth={1.5} size={14} />
+          </button>
+        ) : (
+          <span className="absolute right-2 font-newform-mono! text-[10px] tracking-wider text-text-muted border border-border rounded px-1.5 py-0.5 pointer-events-none">
+            ⌘K
           </span>
-        </button>
-        <button
-          onClick={() => setActive((prev) => !prev)}
-          className={clsx(
-            "absolute top-0 right-0 w-10 h-10 mr-0.5 flex justify-center items-center rounded-full transition-all duration-200 ease-in-out cursor-pointer pointer-events-auto!",
-          )}
-        >
-          {active ? (
-            <X className="mb-0.5" size="1.2em" />
-          ) : (
-            <Search className="mb-0.5" size="1.2em" />
-          )}
-        </button>
-      </div>
+        )}
     </div>
   );
 }
