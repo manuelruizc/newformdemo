@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { Epilogue, Roboto, Space_Grotesk } from "next/font/google";
+import { Epilogue, Roboto } from "next/font/google";
 import "./globals.css";
 import { TRPCProvider } from "@newformdemo/client/providers/trcpprovider";
-import Dashboard from "./components/dashboard";
 import { AppFlowContextProvider } from "@/providers/appflow";
 import { WillBotTourProvider } from "@/providers/willbottour";
 
@@ -33,9 +32,7 @@ export default function RootLayout({
       >
         <TRPCProvider>
           <AppFlowContextProvider>
-            <WillBotTourProvider>
-              <Dashboard>{children}</Dashboard>
-            </WillBotTourProvider>
+            <WillBotTourProvider>{children}</WillBotTourProvider>
           </AppFlowContextProvider>
         </TRPCProvider>
       </body>

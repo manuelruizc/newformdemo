@@ -38,3 +38,5 @@ server/uploads/videos/*
 # gcp service account key
 server/gcp-key.json
 server/*-gcp-key.json
+
+nfds
