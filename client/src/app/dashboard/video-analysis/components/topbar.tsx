@@ -1,7 +1,13 @@
+"use client";
 import { useEffect, useRef, useState } from "react";
 import SearchInput from "./searchinput";
 import clsx from "clsx";
 import DropdownSelect from "./dropdownselect";
+import Logo from "@/ui/logo";
+import Button from "@/ui/button";
+import Modal from "@/ui/modal";
+import VideoAnalysisModal from "@/ui/videoanalysismodal/videoanalysismodal";
+import { Plus } from "lucide-react";
 
 const SORT_OPTIONS = [
   {
@@ -57,8 +63,15 @@ function TopBar({
   handleSearchChange: (newSearch: string) => void;
 }) {
   return (
-    <div className="w-full h-24 flex flex-row justify-between items-center md:px-16 relative px-6">
-      <div className="flex justify-center items-center py-4 md:py-0">
+    <div className="w-full h-20 flex flex-row justify-between items-center md:px-12 relative px-6 border-b border-border bg-background-soft">
+      <div className="flex justify-center items-center gap-4">
+        <div className="h-3 w-16 md:h-3.5 md:w-20">
+          <Logo />
+        </div>
+        <span className="h-5 w-px bg-border hidden lg:block" aria-hidden />
+        <span className="font-newform-mono! text-[11px] uppercase tracking-[0.18em] text-text-secondary mr-2 hidden lg:inline">
+          Ads
+        </span>
         <DropdownSelect
           id="sort-button"
           options={SORT_OPTIONS}
@@ -74,8 +87,21 @@ function TopBar({
           }}
         />
       </div>
-      <div className="w-10 hidden md:block" />
-      <SearchInput handleSearchChange={handleSearchChange} />
+      <div className="flex justify-end items-center gap-3">
+        <SearchInput handleSearchChange={handleSearchChange} />
+        <Modal
+          title=""
+          description=""
+          trigger={
+            <Button id="analyze-ad-button">
+              <Plus strokeWidth={2} size={14} />
+              <span>Analyze ad</span>
+            </Button>
+          }
+        >
+          <VideoAnalysisModal />
+        </Modal>
+      </div>
     </div>
   );
 }

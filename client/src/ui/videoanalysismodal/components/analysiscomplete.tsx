@@ -8,22 +8,9 @@ import clsx from "clsx";
 import NewFormCard from "@/ui/newformcard";
 import Button from "@/ui/button";
 
-function getVibeEmoji(vibe: string): string {
-  vibe = vibe.toLowerCase();
-  const emojiMap: Record<string, string> = {
-    energetic: "⚡",
-    authentic: "✨",
-    inspirational: "💪",
-    helpful: "🙏",
-    playful: "🎉",
-    professional: "💼",
-    emotional: "❤️",
-    humorous: "😄",
-    mysterious: "🔮",
-    calm: "🧘",
-    intense: "🔥",
-  };
-  return emojiMap[vibe.toLowerCase()] || "✨";
+function capitalizeVibe(vibe: string): string {
+  if (!vibe) return vibe;
+  return vibe.charAt(0).toUpperCase() + vibe.slice(1).toLowerCase();
 }
 
 function AnalysisComplete({
@@ -61,13 +48,13 @@ function AnalysisComplete({
           keyMomentsIndex={keyMomentsIndex}
         />
         {reset ? (
-          <div className="w-full px-5 flex justify-between items-center">
+          <div className="w-full px-5 flex justify-between items-center gap-3">
             <Button variant="secondary" className="w-auto">
               Close
             </Button>
 
             <Button onClick={reset} className="w-auto">
-              Analyze Another
+              Analyze another
             </Button>
           </div>
         ) : null}
@@ -79,10 +66,13 @@ function AnalysisComplete({
           scrollbarWidth: "none",
         }}
       >
+        <span className="font-newform-mono! text-[11px] uppercase tracking-[0.18em] text-text-secondary self-start mb-2">
+          Ad
+        </span>
         <Subtitle className="self-start">{video.title}</Subtitle>
-        <Description className="self-start">{video.description}</Description>
+        <Description className="self-start mt-2">{video.description}</Description>
         <SectionHeader>
-          <SectionSubtitle>Creative Performance</SectionSubtitle>
+          <SectionSubtitle>Creative performance</SectionSubtitle>
           <SectionDescription>
             AI-driven forecasting of the creative's overall market viability,
             analyzing projected performance across attention retention,
@@ -116,7 +106,7 @@ function AnalysisComplete({
         </SectionHeader>
         <SectionContainer>
           <LevelCard
-            title="Tik Tok"
+            title="TikTok"
             value={`${video.platformFit.tiktokScore}/10`}
             percentage={(100 / 10) * video.platformFit.tiktokScore}
           />
@@ -132,12 +122,10 @@ function AnalysisComplete({
           />
         </SectionContainer>
         <SectionContainer>
-          <Description className="font-bold! underline">
-            {video.platformFit.reasoning}
-          </Description>
+          <Description>{video.platformFit.reasoning}</Description>
         </SectionContainer>
         <SectionHeader>
-          <SectionSubtitle>Aesthetic & Emotional Profile</SectionSubtitle>
+          <SectionSubtitle>Aesthetic & emotional profile</SectionSubtitle>
           <SectionDescription>
             A predictive analysis of the video’s sensory appeal, identifying the
             emotional tone, visual energy, and cultural pacing to ensure the
@@ -145,16 +133,17 @@ function AnalysisComplete({
           </SectionDescription>
         </SectionHeader>
         <SectionContainer>
-          {video.vibes.map((vibe, index) => (
+          {video.vibes.map((vibe) => (
             <LevelCard
-              title={`${getVibeEmoji(vibe.vibe)}${vibe.vibe}`}
+              key={vibe.id}
+              title={capitalizeVibe(vibe.vibe)}
               value={`${vibe.rate}/10`}
               percentage={(100 / 10) * vibe.rate}
             />
           ))}
         </SectionContainer>
         <SectionHeader>
-          <SectionSubtitle>Predicted Audience Reach</SectionSubtitle>
+          <SectionSubtitle>Predicted audience reach</SectionSubtitle>
           <SectionDescription>
             An AI-forecasted breakdown of the high-resonance viewer profile,
             identifying the specific age groups, gender leanings, and niche
@@ -165,20 +154,23 @@ function AnalysisComplete({
           <LevelCard title="Age range" value={video.demographics.ageRange} />
           <LevelCard title="Gender" value={video.demographics.gender} />
         </SectionContainer>
-        <div className="self-start mb-2">
-          <Description className="font-semibold">
-            Demographic Interests
-          </Description>
+        <div className="self-start mb-3 mt-2">
+          <span className="font-newform-mono! text-[11px] uppercase tracking-[0.18em] text-text-secondary">
+            Demographic interests
+          </span>
         </div>
-        <SectionContainer className="justify-start flex-wrap">
+        <SectionContainer className="justify-start flex-wrap gap-2">
           {video.demographics.interests.map((interest, index) => (
-            <span className="px-4 py-1.5 mb-1.5 rounded-full bg-background-mute text-primary border border-b-4 border-b-primary mr-2 text-sm lg:text-base">
+            <span
+              key={`${interest}-${index}`}
+              className="px-3 py-1 rounded-md bg-background-mute text-text border border-border text-xs"
+            >
               {interest}
             </span>
           ))}
         </SectionContainer>
         <SectionHeader>
-          <SectionSubtitle>Key Engagement Milestones</SectionSubtitle>
+          <SectionSubtitle>Key engagement milestones</SectionSubtitle>
           <SectionDescription>
             Predictive analysis of specific timestamps where viewer retention
             and emotional resonance are at their peak. These highlights identify
@@ -194,7 +186,7 @@ function AnalysisComplete({
           setKeyMomentsIndex={setKeyMomentsIndex}
         />
         <SectionHeader>
-          <SectionSubtitle>Optimization Roadmap</SectionSubtitle>
+          <SectionSubtitle>Optimization roadmap</SectionSubtitle>
           <SectionDescription>
             Actionable, AI-generated refinements designed to bridge the gap
             between current performance and peak creative potential. This
@@ -215,16 +207,16 @@ function AnalysisComplete({
 }
 
 const SectionSubtitle = ({ children }: { children: React.ReactNode }) => (
-  <Subtitle className="uppercase font-bold! tracking-widest!">
+  <span className="font-newform-mono! text-[11px] uppercase tracking-[0.18em] text-text-secondary mb-2">
     {children}
-  </Subtitle>
+  </span>
 );
 const SectionDescription = ({ children }: { children: React.ReactNode }) => (
   <Description>{children}</Description>
 );
 const SectionHeader = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex flex-col justify-start items-start w-full bg-red mb-6 mt-8">
+    <div className="flex flex-col justify-start items-start w-full mb-5 mt-8">
       {children}
     </div>
   );
@@ -236,19 +228,25 @@ function Suggestion({
   suggestion: VideoAdInterface["suggestions"][number];
 }) {
   return (
-    <NewFormCard className="w-full flex flex-col justify-start items-start mb-4 p-4 py-6">
-      <Description className="mb-2">
-        <b>Suggestion: </b>
-        {suggestion.recommendation}
-      </Description>
-      <Description className="mb-2">
-        <b>Why: </b>
-        {suggestion.reason}
-      </Description>
-      <Description>
-        <b>Priority: </b>
-        {suggestion.priority}
-      </Description>
+    <NewFormCard className="w-full flex flex-col justify-start items-start mb-3 p-5 gap-3">
+      <div className="flex flex-col gap-1">
+        <span className="font-newform-mono! text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+          Suggestion
+        </span>
+        <Description>{suggestion.recommendation}</Description>
+      </div>
+      <div className="flex flex-col gap-1">
+        <span className="font-newform-mono! text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+          Why
+        </span>
+        <Description>{suggestion.reason}</Description>
+      </div>
+      <div className="flex flex-col gap-1">
+        <span className="font-newform-mono! text-[10px] uppercase tracking-[0.18em] text-text-secondary">
+          Priority
+        </span>
+        <Description className="capitalize">{suggestion.priority}</Description>
+      </div>
     </NewFormCard>
   );
 }

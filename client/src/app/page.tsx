@@ -1,6 +1,5 @@
-"use client";
-import FileDragAndDrop from "@/ui/dragandrop";
+import VideoAnalysis from "./dashboard/video-analysis/page";
 
 export default function Home() {
-  return <div className="w-full h-screen bg-purple-900" />;
+  return <VideoAnalysis />;
 }

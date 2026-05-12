@@ -28,10 +28,10 @@ const Modal = ({
       <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
 
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-9999" />
+        <Dialog.Overlay className="fixed inset-0 bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 z-9999" />
         <Dialog.Content
-          className={`fixed left-[50%] top-[50%] w-full h-full lg:w-10/12 lg:h-10/12 translate-x-[-50%] translate-y-[-50%] rounded-none lg:rounded-4xl bg-white p-2 lg:p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-9999999 ${className} max-w-325!
-            border-2 border-primary/90 border-b-8 border-b-primary
+          className={`fixed left-[50%] top-[50%] w-full h-full lg:w-10/12 lg:h-10/12 translate-x-[-50%] translate-y-[-50%] rounded-none lg:rounded-2xl bg-white p-2 lg:p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-9999999 ${className} max-w-325!
+            border border-border
           `}
         >
           <Dialog.Title className="hidden"></Dialog.Title>

@@ -14,12 +14,12 @@ function BadgeDropdown({
     <button
       onClick={onClick}
       className={clsx(
-        "flex justify-center items-center px-3 py-2 md:px-4 bg-background-soft rounded-full border border-background-mute text-primary font-semibold cursor-pointer transition-all duration-150 ease-out mr-3.5 hover:scale-105 active:scale-100 active:opacity-80",
-        !active && "text-text-muted",
+        "flex justify-center items-center px-3 h-9 bg-background-soft rounded-lg border border-border text-sm cursor-pointer transition-colors hover:bg-background-mute",
+        active && "ring-2 ring-primary/20 border-primary/40",
       )}
     >
-      <span className="text-sm">{title}</span>
-      <ChevronDown className="ml-2" size="1.3em" />
+      <span className="text-text">{title}</span>
+      <ChevronDown strokeWidth={1.5} className="ml-2 text-text-secondary" size={14} />
     </button>
   );
 }

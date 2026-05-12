@@ -1,41 +1,17 @@
 import express, { Request, Response } from "express";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
 import { prisma } from "lib/prisma";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { uploadBuffer } from "lib/gcs";
 
 const router = express.Router();
 
-const uploadsDir = path.join(__dirname, "../uploads/videos");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-// Sanitize filename function
 const sanitizeFilename = (filename: string): string => {
-  // Remove or replace special characters and spaces
   return filename
-    .replace(/\s+/g, "_") // Replace spaces with underscores
-    .replace(/[^\w.-]/g, "_") // Replace special chars with underscores
-    .replace(/_+/g, "_") // Replace multiple underscores with single
-    .replace(/^_+|_+$/g, ""); // Remove leading/trailing underscores
+    .replace(/\s+/g, "_")
+    .replace(/[^\w.-]/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_+|_+$/g, "");
 };
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    // Sanitize the original filename
-    const sanitizedName = sanitizeFilename(file.originalname);
-    const uniqueName = `${Date.now()}-${sanitizedName}`;
-    cb(null, uniqueName);
-  },
-});
 
 const fileFilter = (
   req: Request,
@@ -58,10 +34,10 @@ const fileFilter = (
 };
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   fileFilter,
   limits: {
-    fileSize: 100 * 1024 * 1024, // 100MB limit
+    fileSize: 60 * 1024 * 1024,
   },
 });
 
@@ -76,12 +52,18 @@ router.post(
           error: "No video file uploaded",
         });
       }
-      const videoPath = req.file.path;
-      const uniqueName = req.file.filename;
+
+      const sanitizedName = sanitizeFilename(req.file.originalname);
+      const uniqueName = `${Date.now()}-${sanitizedName}`;
+      const uri = await uploadBuffer(
+        uniqueName,
+        req.file.buffer,
+        req.file.mimetype
+      );
 
       const { id } = await prisma.video.create({
         data: {
-          uri: videoPath,
+          uri,
           title: "",
           description: "",
           uniqueName,
@@ -94,12 +76,12 @@ router.post(
         success: true,
         data: {
           id,
-          filename: req.file.filename,
+          filename: uniqueName,
           originalName: req.file.originalname,
           size: req.file.size,
           mimetype: req.file.mimetype,
-          path: req.file.path,
-          uniqueName: req.file.filename,
+          path: uri,
+          uniqueName,
         },
       });
     } catch (error) {
@@ -117,7 +99,7 @@ router.use(
       if (error.code === "LIMIT_FILE_SIZE") {
         return res.status(400).json({
           success: false,
-          error: "File is too large. Maximum size is 100MB",
+          error: "Video is too large. Maximum size is 60 MB.",
         });
       }
     }

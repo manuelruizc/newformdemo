@@ -5,16 +5,16 @@ type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 
 const VARIANTS: Record<ButtonVariant, string> = {
   primary:
-    "bg-primary hover:bg-primary-hover active:bg-primary-dark text-primary-glow outline-primary-dark/0 active:outline-primary-dark/30",
+    "bg-primary hover:bg-primary-hover active:bg-primary-dark text-white border border-transparent",
 
   secondary:
-    "bg-transparent text-text outline-text-muted/0 active:outline-text-muted/30",
+    "bg-background-soft hover:bg-background-mute text-text border border-border",
 
   ghost:
-    "bg-transparent hover:bg-white/5 active:bg-white/10 text-foreground outline-white/0 active:outline-white/20",
+    "bg-transparent hover:bg-background-mute text-text border border-transparent",
 
   danger:
-    "bg-error hover:bg-error/80 active:bg-error text-white outline-error/0 active:outline-error/30",
+    "bg-error hover:bg-error/90 active:bg-error/80 text-white border border-transparent",
 };
 
 function Button({
@@ -35,12 +35,12 @@ function Button({
       id={id}
       onClick={onClick}
       className={clsx(
-        "px-4 md:px-5 lg:px-6 py-2 rounded-xl outline-solid flex justify-center items-center cursor-pointer select-none transition-colors",
+        "px-3.5 h-9 rounded-md flex justify-center items-center cursor-pointer select-none transition-colors text-[13px] font-medium",
         VARIANTS[variant],
         className,
       )}
     >
-      <span className="text-sm lg:text-base">{children}</span>
+      <span className="inline-flex items-center gap-2">{children}</span>
     </button>
   );
 }

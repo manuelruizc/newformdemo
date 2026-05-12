@@ -17,6 +17,35 @@ interface UploadedFile {
   preview?: string;
 }
 
+const MAX_SIZE_MB = 60;
+const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+const MAX_DURATION_SECONDS = 150;
+
+const formatMb = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+
+const formatDuration = (seconds: number) => {
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  return m > 0 ? `${m}m ${s}s` : `${s}s`;
+};
+
+const getVideoDuration = (file: File): Promise<number> =>
+  new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const video = document.createElement("video");
+    video.preload = "metadata";
+    video.onloadedmetadata = () => {
+      const duration = video.duration;
+      URL.revokeObjectURL(url);
+      resolve(duration);
+    };
+    video.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Could not read video metadata"));
+    };
+    video.src = url;
+  });
+
 function FileDragAndDrop({
   accept = [],
   onHandleFiles,
@@ -54,7 +83,7 @@ function FileDragAndDrop({
     }
   };
 
-  const processFiles = (fileList: File[]) => {
+  const processFiles = async (fileList: File[]) => {
     const newFiles: UploadedFile[] = [];
 
     for (let i = 0; i < fileList.length; i++) {
@@ -76,6 +105,32 @@ function FileDragAndDrop({
           type: "error",
           duration: 4000,
           message: "Video format not compatible. Try to use mp4 or webm",
+        });
+        continue;
+      }
+      if (file.size > MAX_SIZE_BYTES) {
+        addToast({
+          type: "error",
+          duration: 5000,
+          message: `Video is too large (${formatMb(file.size)}). Max size is ${MAX_SIZE_MB} MB.`,
+        });
+        continue;
+      }
+      try {
+        const duration = await getVideoDuration(file);
+        if (duration > MAX_DURATION_SECONDS) {
+          addToast({
+            type: "error",
+            duration: 5000,
+            message: `Video is too long (${formatDuration(duration)}). Max length is ${formatDuration(MAX_DURATION_SECONDS)}.`,
+          });
+          continue;
+        }
+      } catch (err) {
+        addToast({
+          type: "error",
+          duration: 4000,
+          message: "Could not read this video. Try a different file.",
         });
         continue;
       }
@@ -105,10 +160,10 @@ function FileDragAndDrop({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          className={`border-3 border-dashed rounded-xl text-center transition-all cursor-pointer w-11/12 lg:w-9/12 h-full flex flex-col justify-center items-center ${
+          className={`border-2 border-dashed rounded-3xl text-center transition-colors cursor-pointer w-11/12 lg:w-9/12 h-full flex flex-col justify-center items-center ${
             isDragging
-              ? "border-blue-500 bg-blue-50 scale-105"
-              : "border-gray-300 bg-white hover:border-blue-400 hover:bg-gray-50"
+              ? "border-primary bg-primary-glow"
+              : "border-border bg-background-soft hover:border-text-secondary hover:bg-background-mute"
           }`}
           onClick={() => document.getElementById("fileInput")?.click()}
         >
@@ -122,15 +177,24 @@ function FileDragAndDrop({
           />
 
           <Upload
-            className={`w-16 h-16 mx-auto mb-4 ${
-              isDragging ? "text-blue-500" : "text-gray-400"
+            strokeWidth={1.5}
+            className={`w-12 h-12 mx-auto mb-5 ${
+              isDragging ? "text-primary" : "text-text-secondary"
             }`}
           />
 
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">
-            {isDragging ? "Drop your ad" : "Drag & Drop your ad here"}
+          <span className="font-newform-mono! text-[11px] uppercase tracking-[0.18em] text-text-secondary mb-3">
+            Upload
+          </span>
+          <h3 className="text-lg font-medium tracking-tight text-text mb-2">
+            {isDragging ? "Drop your ad" : "Drag & drop your ad here"}
           </h3>
-          <p className="text-gray-500">or click to browse from your computer</p>
+          <p className="text-sm text-text-secondary">
+            or click to browse from your computer
+          </p>
+          <span className="mt-4 font-newform-mono! text-[10px] uppercase tracking-[0.18em] text-text-muted">
+            MP4 or WEBM · Max {MAX_SIZE_MB} MB · Max {formatDuration(MAX_DURATION_SECONDS)}
+          </span>
         </div>
       </div>
     </div>

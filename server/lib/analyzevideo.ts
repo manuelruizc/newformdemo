@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
-import fs from "fs";
 import path from "path";
 import { prisma } from "./prisma";
+import { downloadBuffer } from "./gcs";
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
@@ -19,18 +19,7 @@ export async function analyzeVideo(videoId: number) {
       return "Video not found";
     }
 
-    // Read video file
-    const videoPath = path.join(
-      __dirname,
-      "../../uploads/videos",
-      video.uniqueName
-    );
-
-    if (!fs.existsSync(videoPath)) {
-      throw new Error("Video file not found");
-    }
-
-    const videoData = fs.readFileSync(videoPath);
+    const videoData = await downloadBuffer(video.uniqueName);
     const base64Video = videoData.toString("base64");
 
     // Get file extension to determine mimetype
