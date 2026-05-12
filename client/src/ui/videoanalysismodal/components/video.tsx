@@ -95,24 +95,20 @@ function Video({
             {hideKeyMoments ? <EyeClosed strokeWidth={1.5} size={18} /> : <Eye strokeWidth={1.5} size={18} />}
           </button>
         </div>
-        <div className="w-full py-4 mb-4 flex justify-center items-center">
-          <div
-            ref={progressBarRef}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (duration < 0 || !videoRef.current || !progressBarRef.current)
-                return;
-
-              const rect = progressBarRef.current.getBoundingClientRect();
-              const clickX = e.clientX - rect.left; // Click position relative to the element
-              const width = rect.width;
-              const percentage = clickX / width; // 0 to 1
-              const time = duration * percentage;
-
-              videoRef.current.currentTime = time;
-            }}
-            className="w-10/12 h-1 bg-white/30 rounded-full pointer-events-auto flex justify-start items-center cursor-pointer relative"
-          >
+        <div
+          ref={progressBarRef}
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            const dur = videoRef.current?.duration;
+            if (!dur || !progressBarRef.current) return;
+            const rect = progressBarRef.current.getBoundingClientRect();
+            const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            videoRef.current!.currentTime = dur * pct;
+          }}
+          className="w-10/12 h-5 mb-4 flex items-center cursor-pointer relative pointer-events-auto"
+        >
+          <div className="w-full h-1 bg-white/30 rounded-full relative">
             <div
               className="h-full bg-white rounded-full"
               style={{ width: `${percentage}%` }}
@@ -163,9 +159,11 @@ function KeyMomentsSidebar({
       <div className="w-full h-full flex flex-col lg:justify-between justify-end">
         {keyMoments.map((moment, index) => {
           return (
-            <div className="w-full lg:w-125 pointer-events-none flex justify-start items-center h-full">
+            <div
+              key={moment.id}
+              className="w-full lg:w-125 pointer-events-none flex justify-start items-center h-full"
+            >
               <button
-                key={index}
                 className={clsx(
                   "hidden lg:flex w-1 h-full bg-primary/50 hover:bg-primary duration-200 ease-out transition-colors rounded-r cursor-pointer pointer-events-auto",
                   index === keyMomentsIndex && "bg-primary! w-1.5!",
@@ -212,7 +210,7 @@ function VideoProgressKeyMoments({
         return (
           <button
             key={index}
-            className="absolute top-1/2 -translate-y-1/2 h-2 w-2 bg-white hover:bg-primary duration-200 ease-out transition-colors rounded-full cursor-pointer"
+            className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-4 flex items-center justify-center cursor-pointer pointer-events-auto group/dot"
             style={{ left: position + "%" }}
             onClick={(e) => {
               e.stopPropagation();
@@ -220,7 +218,9 @@ function VideoProgressKeyMoments({
               setKeyMomentsIndex(index);
               videoRef.current.currentTime = moment.timestamp;
             }}
-          ></button>
+          >
+            <span className="h-2 w-2 rounded-full bg-white group-hover/dot:bg-primary group-hover/dot:h-2.5 group-hover/dot:w-2.5 transition-all duration-200 ease-out" />
+          </button>
         );
       })}
     </React.Fragment>

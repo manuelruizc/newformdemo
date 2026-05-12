@@ -49,8 +49,18 @@ export async function downloadBuffer(objectName: string): Promise<Buffer> {
   return contents;
 }
 
-export function createReadStream(objectName: string) {
-  return bucket.file(objectName).createReadStream();
+export function createReadStream(
+  objectName: string,
+  options?: { start?: number; end?: number },
+) {
+  return bucket.file(objectName).createReadStream(options);
+}
+
+export async function getObjectSize(objectName: string): Promise<number> {
+  const [metadata] = await bucket.file(objectName).getMetadata();
+  return typeof metadata.size === "string"
+    ? parseInt(metadata.size, 10)
+    : (metadata.size as number);
 }
 
 export async function deleteObject(objectName: string) {

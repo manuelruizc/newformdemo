@@ -6,7 +6,7 @@ import uploadRouter from "./routes/upload";
 import genAIStreamsRouter from "./routes/genaiastreams";
 import { prisma } from "lib/prisma";
 import { GoogleGenAI } from "@google/genai";
-import { createReadStream } from "lib/gcs";
+import { createReadStream, getObjectSize } from "lib/gcs";
 
 const app = express();
 
@@ -52,7 +52,58 @@ app.get("/", async (req, res) => {
 
 app.get("/uploads/videos/:objectName", async (req, res) => {
   try {
-    const stream = createReadStream(req.params.objectName);
+    const { objectName } = req.params;
+    const size = await getObjectSize(objectName);
+    const range = req.headers.range;
+
+    const mimeFromExt = (name: string) => {
+      const ext = name.toLowerCase().split(".").pop();
+      switch (ext) {
+        case "mp4":
+          return "video/mp4";
+        case "webm":
+          return "video/webm";
+        case "mov":
+          return "video/quicktime";
+        default:
+          return "application/octet-stream";
+      }
+    };
+    const contentType = mimeFromExt(objectName);
+
+    if (range) {
+      const match = /^bytes=(\d*)-(\d*)$/.exec(range);
+      if (!match) {
+        res.status(416).set("Content-Range", `bytes */${size}`).end();
+        return;
+      }
+      const start = match[1] ? parseInt(match[1], 10) : 0;
+      const end = match[2] ? parseInt(match[2], 10) : size - 1;
+      if (start >= size || end >= size || start > end) {
+        res.status(416).set("Content-Range", `bytes */${size}`).end();
+        return;
+      }
+      res.status(206).set({
+        "Content-Range": `bytes ${start}-${end}/${size}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": end - start + 1,
+        "Content-Type": contentType,
+      });
+      const stream = createReadStream(objectName, { start, end });
+      stream.on("error", (err) => {
+        console.error("GCS stream error:", err);
+        if (!res.headersSent) res.status(500).end();
+      });
+      stream.pipe(res);
+      return;
+    }
+
+    res.set({
+      "Content-Length": size,
+      "Content-Type": contentType,
+      "Accept-Ranges": "bytes",
+    });
+    const stream = createReadStream(objectName);
     stream.on("error", (err) => {
       console.error("GCS stream error:", err);
       if (!res.headersSent) res.status(404).end();
@@ -60,7 +111,7 @@ app.get("/uploads/videos/:objectName", async (req, res) => {
     stream.pipe(res);
   } catch (err) {
     console.error("Video stream failed:", err);
-    res.status(500).end();
+    if (!res.headersSent) res.status(500).end();
   }
 });
 
