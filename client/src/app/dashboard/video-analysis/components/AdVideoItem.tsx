@@ -15,7 +15,6 @@ import {
   Key,
   Layers,
   Layers2,
-  Trash,
   Video,
   Volume,
   Volume1,
@@ -198,7 +197,7 @@ function AdVideoItem({ video, id }: { id?: string; video: VideoAdInterface }) {
             <video
               ref={videoRef}
               className="absolute top-0 left-0 w-full h-full object-cover z-0! rounded-3xl"
-              src={`http://localhost:4000/uploads/videos/${video.uniqueName}`}
+              src={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/uploads/videos/${video.uniqueName}`}
               controls={false}
               onTimeUpdate={(e) => {
                 const { currentTime, duration } = e.currentTarget;
@@ -376,15 +375,6 @@ function VideoBottom({
           }}
         >
           {muted ? <VolumeX /> : <Volume1 />}
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setOpenModal(true);
-          }}
-          className="text-error/80 cursor-pointer"
-        >
-          <Trash size={22} />
         </button>
         <Modal
           title=""

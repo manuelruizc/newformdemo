@@ -88,7 +88,7 @@ function VideoAnalysisModal() {
       const formData = new FormData();
       formData.append("video", uploadedFile.file);
       formData.append("id", uploadedFile.id);
-      const uploadRes = await fetch("http://localhost:4000/api/upload/video", {
+      const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/upload/video`, {
         method: "POST",
         body: formData,
       });

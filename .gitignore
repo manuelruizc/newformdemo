@@ -34,3 +34,7 @@ Thumbs.db
 # video-upload
 server/uploads/videos/*
 !server/uploads/videos/.gitkeep
+
+# gcp service account key
+server/gcp-key.json
+server/*-gcp-key.json

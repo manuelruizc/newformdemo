@@ -34,7 +34,7 @@ function Video({
       <video
         ref={videoRef}
         className="absolute top-0 left-0 w-full h-full object-cover z-10! rounded-3xl"
-        src={`http://localhost:4000/uploads/videos/${video.uniqueName}`}
+        src={`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/uploads/videos/${video.uniqueName}`}
         controls={false}
         onTimeUpdate={(e) => {
           const { currentTime, duration: _duration } = e.currentTarget;

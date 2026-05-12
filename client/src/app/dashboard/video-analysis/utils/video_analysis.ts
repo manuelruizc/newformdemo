@@ -15,7 +15,7 @@ export function streamVideoAnalysis(
   }
 ) {
   const es = new EventSource(
-    `http://localhost:4000/api/genaistreams/analyze_video/${videoId}`
+    `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/genaistreams/analyze_video/${videoId}`
   );
 
   let resultReceived = false;

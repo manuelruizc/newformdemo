@@ -1,22 +1,18 @@
 import express from "express";
 import cors from "cors";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import path from "path";
 import { appRouter } from "@newformdemo/trpc";
 import uploadRouter from "./routes/upload";
 import genAIStreamsRouter from "./routes/genaiastreams";
 import { prisma } from "lib/prisma";
-import { fileURLToPath } from "url";
 import { GoogleGenAI } from "@google/genai";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { createReadStream } from "lib/gcs";
 
 const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_ORIGIN ?? "http://localhost:3000",
     credentials: true,
   })
 );
@@ -54,10 +50,19 @@ app.get("/", async (req, res) => {
   res.json(ans);
 });
 
-app.use(
-  "/uploads/videos",
-  express.static(path.join(__dirname, "uploads/videos"))
-);
+app.get("/uploads/videos/:objectName", async (req, res) => {
+  try {
+    const stream = createReadStream(req.params.objectName);
+    stream.on("error", (err) => {
+      console.error("GCS stream error:", err);
+      if (!res.headersSent) res.status(404).end();
+    });
+    stream.pipe(res);
+  } catch (err) {
+    console.error("Video stream failed:", err);
+    res.status(500).end();
+  }
+});
 
 app.use(
   "/trpc",
